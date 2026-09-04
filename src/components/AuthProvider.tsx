@@ -210,7 +210,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               style={{ position: "relative", minHeight: 450, background: "#EBE2CE" }}
             >
               <img
-                src="/img/selloum.png"
+                src="/img/potting-shop.jpg"
                 alt=""
                 aria-hidden="true"
                 style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}

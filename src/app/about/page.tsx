@@ -75,7 +75,7 @@ export default async function AboutPage() {
           </div>
           <div style={{ position: "relative", alignSelf: "end" }}>
             <div style={{ borderRadius: "26px 26px 0 0", overflow: "hidden", aspectRatio: "4/5", background: "#EBE2CE" }}>
-              <img src="/img/jungle.png" alt="Plant collection" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src="/img/pink-princess.jpg" alt="Plant collection" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
             <div style={{ position: "absolute", left: -24, bottom: 70, background: "#FDF9EE", borderRadius: 18, padding: "16px 20px", boxShadow: "0 12px 30px rgba(58,38,17,.16)" }}>
               <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: ".12em", color: "#6F6249" }}>LIVE BID</div>

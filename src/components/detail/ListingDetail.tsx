@@ -130,10 +130,8 @@ export function ListingDetail({ id }: { id: string }) {
   }, [id]);
 
   const gallery = useMemo(() => {
-    if (!listing) return ALL_IMAGES.slice(0, 4);
-    const primary = listing.images?.[0] || ALL_IMAGES[0];
-    const rest = ALL_IMAGES.filter((x) => x !== primary);
-    return [primary, ...rest.slice(0, 3)];
+    if (!listing) return [ALL_IMAGES[0]];
+    return listing.images?.length ? listing.images : [ALL_IMAGES[0]];
   }, [listing]);
 
   if (loading) {
@@ -303,17 +301,19 @@ export function ListingDetail({ id }: { id: string }) {
           <div style={{ borderRadius: 20, overflow: "hidden", background: "#EBE2CE", aspectRatio: "4/5" }}>
             <img src={gallery[thumbIdx] || gallery[0]} alt={listing.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
-          <div data-r="g4" style={{ display: "grid", gridTemplateColumns: "repeat(4,minmax(0,1fr))", gap: 10, marginTop: 10 }}>
-            {gallery.map((img, i) => (
-              <button
-                key={i}
-                onClick={() => setThumbIdx(i)}
-                style={{ aspectRatio: "1", borderRadius: 10, overflow: "hidden", border: "2px solid " + (i === thumbIdx ? "#6A9331" : "transparent"), cursor: "pointer", padding: 0 }}
-              >
-                <img src={img} alt="View" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              </button>
-            ))}
-          </div>
+          {gallery.length > 1 ? (
+            <div data-r="g4" style={{ display: "grid", gridTemplateColumns: "repeat(4,minmax(0,1fr))", gap: 10, marginTop: 10 }}>
+              {gallery.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setThumbIdx(i)}
+                  style={{ aspectRatio: "1", borderRadius: 10, overflow: "hidden", border: "2px solid " + (i === thumbIdx ? "#6A9331" : "transparent"), cursor: "pointer", padding: 0 }}
+                >
+                  <img src={img} alt="View" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                </button>
+              ))}
+            </div>
+          ) : null}
           <div style={{ marginTop: 26 }}>
             <h2 style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 18, margin: "0 0 12px" }}>About this plant</h2>
             <p style={{ color: "#63543A", fontSize: 15.5, lineHeight: 1.65, margin: "0 0 20px" }}>{listing.blurb}</p>
