@@ -7,7 +7,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { useCart, useSaved } from "@/components/ListStateProvider";
 
-function SearchBox() {
+function SearchBox({ onNavigate }: { onNavigate?: () => void }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [q, setQ] = useState(searchParams.get("q") ?? "");
@@ -43,6 +43,7 @@ function SearchBox() {
           if (v) params.set("q", v);
           else params.delete("q");
           router.push("/?" + params.toString());
+          onNavigate?.();
         }}
         aria-label="Search plants by name or species"
         placeholder="Search anthurium, monstera…"
@@ -57,11 +58,30 @@ export function Header() {
   const { user, profile, requireAuth, signOut } = useAuth();
   const cart = useCart();
   const saved = useSaved();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const navItems = [
     { href: "/", label: "Shop", active: pathname === "/" },
     { href: "/about", label: "About", active: pathname === "/about" },
   ];
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   return (
     <header style={{ position: "sticky", top: 0, zIndex: 40, background: "#F5EEDC", borderBottom: "1px solid rgba(58,38,17,.14)" }}>
@@ -75,7 +95,6 @@ export function Header() {
           display: "flex",
           alignItems: "center",
           gap: 16,
-          flexWrap: "wrap",
         }}
       >
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", flexShrink: 0 }}>
@@ -100,7 +119,7 @@ export function Header() {
             Plant<span aria-hidden="true" style={{ color: "#F2C438" }}>♥</span>Luva
           </div>
         </Link>
-        <nav style={{ display: "flex", alignItems: "center", gap: 2, flexShrink: 0 }}>
+        <nav className="pl-desktop-only" style={{ display: "flex", alignItems: "center", gap: 2, flexShrink: 0 }}>
           {navItems.map((n) => (
             <Link
               key={n.href}
@@ -122,10 +141,12 @@ export function Header() {
             </Link>
           ))}
         </nav>
-        <Suspense fallback={<div style={{ flex: 1 }} />}>
-          <SearchBox />
-        </Suspense>
-        <div data-r="ctrls" style={{ display: "flex", alignItems: "center", gap: 7, marginLeft: "auto", flexShrink: 0 }}>
+        <div className="pl-desktop-only" style={{ flex: "1 1 0", minWidth: 0, display: "flex" }}>
+          <Suspense fallback={<div style={{ flex: 1 }} />}>
+            <SearchBox />
+          </Suspense>
+        </div>
+        <div data-r="ctrls" className="pl-desktop-only" style={{ display: "flex", alignItems: "center", gap: 7, marginLeft: "auto", flexShrink: 0 }}>
           {user ? (
             <Link
               href="/messages"
@@ -276,7 +297,138 @@ export function Header() {
             </button>
           )}
         </div>
+
+        <div className="pl-mobile-only" style={{ display: "none", alignItems: "center", gap: 10, marginLeft: "auto" }}>
+          <Link
+            href="/basket"
+            title="Basket"
+            style={{ position: "relative", border: "1px solid rgba(58,38,17,.14)", background: "none", width: 40, height: 40, borderRadius: "50%", display: "grid", placeItems: "center", fontSize: 15 }}
+          >
+            🧺
+            {cart.ids.length ? (
+              <span
+                style={{
+                  position: "absolute",
+                  top: -3,
+                  right: -3,
+                  minWidth: 18,
+                  height: 18,
+                  borderRadius: 9,
+                  background: "#6A9331",
+                  color: "#F5EEDC",
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  display: "grid",
+                  placeItems: "center",
+                  padding: "0 5px",
+                }}
+              >
+                {cart.ids.length}
+              </span>
+            ) : null}
+          </Link>
+          <button
+            onClick={() => setMenuOpen(true)}
+            aria-label="Open menu"
+            aria-expanded={menuOpen}
+            style={{ border: "1px solid rgba(58,38,17,.14)", background: "none", width: 40, height: 40, borderRadius: "50%", display: "grid", placeItems: "center", fontSize: 18, cursor: "pointer" }}
+          >
+            ☰
+          </button>
+        </div>
       </div>
+
+      {menuOpen ? (
+        <>
+          <div className="pl-menu-backdrop" onClick={() => setMenuOpen(false)} />
+          <div className="pl-menu-panel" role="dialog" aria-modal="true" aria-label="Menu">
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+              <div style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 19, color: "#6A9331" }}>
+                Plant<span style={{ color: "#F2C438" }}>♥</span>Luva
+              </div>
+              <button
+                onClick={() => setMenuOpen(false)}
+                aria-label="Close menu"
+                style={{ border: 0, background: "none", fontSize: 24, color: "#3A2611", cursor: "pointer", lineHeight: 1, padding: 8 }}
+              >
+                ×
+              </button>
+            </div>
+            <Suspense fallback={null}>
+              <SearchBox onNavigate={() => setMenuOpen(false)} />
+            </Suspense>
+            <nav style={{ display: "grid", gap: 6, margin: "18px 0" }}>
+              {navItems.map((n) => (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  aria-current={n.active ? "page" : undefined}
+                  style={{
+                    border: 0,
+                    background: n.active ? "#DCE3BC" : "transparent",
+                    color: "#2C1C0B",
+                    padding: "14px 16px",
+                    borderRadius: 14,
+                    fontSize: 16,
+                    fontWeight: 700,
+                    fontFamily: "var(--font-gluten)",
+                  }}
+                >
+                  {n.label}
+                </Link>
+              ))}
+            </nav>
+            <div style={{ borderTop: "1px solid rgba(58,38,17,.14)", paddingTop: 16, display: "grid", gap: 6 }}>
+              {user ? (
+                <Link href="/messages" style={{ display: "flex", justifyContent: "space-between", padding: "13px 16px", borderRadius: 14, fontSize: 14.5, fontWeight: 600, color: "#3A2611" }}>
+                  Messages
+                </Link>
+              ) : null}
+              <Link href="/saved" style={{ display: "flex", justifyContent: "space-between", padding: "13px 16px", borderRadius: 14, fontSize: 14.5, fontWeight: 600, color: "#3A2611" }}>
+                Saved {saved.ids.length ? "(" + saved.ids.length + ")" : ""}
+              </Link>
+              {user ? (
+                <>
+                  <Link href="/dashboard" style={{ display: "flex", justifyContent: "space-between", padding: "13px 16px", borderRadius: 14, fontSize: 14.5, fontWeight: 600, color: "#3A2611" }}>
+                    Your shelf
+                  </Link>
+                  <button
+                    onClick={() => {
+                      signOut();
+                      setMenuOpen(false);
+                    }}
+                    style={{ textAlign: "left", border: 0, background: "none", padding: "13px 16px", borderRadius: 14, fontSize: 14.5, fontWeight: 600, color: "#7A6A4E", cursor: "pointer" }}
+                  >
+                    Sign out
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    requireAuth("in");
+                  }}
+                  style={{
+                    textAlign: "left",
+                    border: 0,
+                    background: "#6A9331",
+                    color: "#F5EEDC",
+                    padding: "14px 16px",
+                    borderRadius: 14,
+                    fontSize: 15,
+                    fontWeight: 700,
+                    fontFamily: "var(--font-gluten)",
+                    cursor: "pointer",
+                    marginTop: 8,
+                  }}
+                >
+                  Sign in
+                </button>
+              )}
+            </div>
+          </div>
+        </>
+      ) : null}
     </header>
   );
 }

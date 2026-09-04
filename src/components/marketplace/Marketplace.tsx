@@ -46,6 +46,7 @@ export function Marketplace() {
   const [maxPrice, setMaxPrice] = useState(4000);
   const [sort, setSort] = useState("new");
   const [page, setPage] = useState(1);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   useEffect(() => {
     setQuery(searchParams.get("q") ?? "");
@@ -60,6 +61,20 @@ export function Marketplace() {
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
+
+  useEffect(() => {
+    if (!filtersOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setFiltersOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [filtersOpen]);
 
   useEffect(() => {
     let cancelled = false;
@@ -130,6 +145,8 @@ export function Marketplace() {
     setModeTab("all");
     router.replace("/");
   }
+
+  const activeFilterCount = regions.length + sizes.length + care.length + (maxPrice < 4000 ? 1 : 0);
 
   const filterGroups: { label: string; options: { label: string; count: number; on: boolean; toggle: () => void }[] }[] = [
     {
@@ -219,6 +236,26 @@ export function Marketplace() {
               <p style={{ color: "#7A6A4E", fontSize: 15, margin: "9px 0 0" }}>{filtered.length} plants · Trinidad &amp; Tobago · prices in TTD</p>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 9, paddingBottom: 3, flexWrap: "wrap" }}>
+              <button
+                onClick={() => setFiltersOpen(true)}
+                className="pl-filters-toggle"
+                style={{
+                  border: "1px solid " + (activeFilterCount ? "#3A2611" : "rgba(58,38,17,.2)"),
+                  background: activeFilterCount ? "#3A2611" : "transparent",
+                  color: activeFilterCount ? "#FDF9EE" : "#3A2611",
+                  padding: "12px 16px",
+                  borderRadius: 999,
+                  fontSize: 12.5,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  display: "none",
+                  alignItems: "center",
+                  gap: 6,
+                }}
+              >
+                Filters{activeFilterCount ? " (" + activeFilterCount + ")" : ""}
+              </button>
               <span style={{ color: "#7A6A4E", fontSize: 12.5 }}>Sort</span>
               {SORTS.map(([k, label]) => (
                 <button
@@ -270,13 +307,26 @@ export function Marketplace() {
         </div>
       </div>
 
+      {filtersOpen ? (
+        <div className="pl-filters-backdrop" onClick={() => setFiltersOpen(false)} style={{ display: "none" }} />
+      ) : null}
       <div id="pl-main" data-r="shop pad" style={{ maxWidth: 1400, margin: "0 auto", padding: "32px 32px 90px", display: "grid", gridTemplateColumns: "230px 1fr", gap: 40, alignItems: "start" }}>
-        <aside style={{ position: "sticky", top: 106 }}>
+        <aside className={filtersOpen ? "pl-filters-panel pl-filters-open" : "pl-filters-panel"} style={{ position: "sticky", top: 106 }}>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 4 }}>
             <h2 style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 16, letterSpacing: ".03em", margin: 0 }}>FILTERS</h2>
-            <button onClick={clearFilters} style={{ border: 0, background: "none", color: "#A15A05", fontSize: 12, fontWeight: 700, cursor: "pointer", padding: "8px 6px", margin: "-8px -6px", minHeight: 28 }}>
-              CLEAR ✕
-            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <button onClick={clearFilters} style={{ border: 0, background: "none", color: "#A15A05", fontSize: 12, fontWeight: 700, cursor: "pointer", padding: "8px 6px", margin: "-8px 0", minHeight: 28 }}>
+                CLEAR ✕
+              </button>
+              <button
+                onClick={() => setFiltersOpen(false)}
+                className="pl-filters-close"
+                aria-label="Close filters"
+                style={{ display: "none", border: 0, background: "none", color: "#3A2611", fontSize: 20, cursor: "pointer", padding: "8px 6px", margin: "-8px -6px 0 0", lineHeight: 1 }}
+              >
+                ×
+              </button>
+            </div>
           </div>
           {filterGroups.map((g) => (
             <div key={g.label} style={{ borderTop: "1px solid rgba(58,38,17,.14)", padding: "15px 0" }}>
@@ -337,6 +387,24 @@ export function Marketplace() {
               </button>
             </div>
           </div>
+          <button
+            onClick={() => setFiltersOpen(false)}
+            className="pl-filters-apply"
+            style={{
+              display: "none",
+              border: 0,
+              background: "#6A9331",
+              color: "#F5EEDC",
+              padding: 16,
+              borderRadius: 14,
+              fontSize: 15,
+              fontWeight: 700,
+              cursor: "pointer",
+              width: "100%",
+            }}
+          >
+            Show {filtered.length} plant{filtered.length === 1 ? "" : "s"}
+          </button>
         </aside>
 
         <div>
