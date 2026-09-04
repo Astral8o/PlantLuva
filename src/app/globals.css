@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+:root {
+  --pl-cream: #fdf9ee;
+  --pl-cream-alt: #f5eedc;
+  --pl-cocoa: #3a2611;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: var(--pl-cream);
+  color: var(--pl-cocoa);
+  margin: 0;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: #4f6e24;
+  text-decoration: none;
+}
+a:hover {
+  color: #f5a644;
+}
+footer a {
+  color: rgba(253, 249, 238, 0.78);
+}
+footer a:hover {
+  color: #b0c35c;
+}
+
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+input[type="range"] {
+  accent-color: #6a9331;
+}
+::placeholder {
+  color: #6f6249;
+}
+
+@keyframes pl-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.pl-rise {
+  animation: pl-rise 0.4s both;
+}
+
+:focus {
+  outline: none;
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid #3a2611;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.pl-dark a:focus-visible,
+.pl-dark button:focus-visible,
+.pl-dark input:focus-visible {
+  outline-color: #f2c438;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.pl-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.pl-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 12px;
+  z-index: 90;
+  background: #3a2611;
+  color: #fdf9ee;
+  padding: 13px 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.pl-skip-link:focus {
+  left: 16px;
+}
