@@ -5,27 +5,42 @@ import type { ListingWithSeller } from "@/lib/types";
 import { buildCardVM } from "@/lib/listingHelpers";
 import { PlantCard } from "@/components/PlantCard";
 import { SellerChatButton } from "@/components/detail/SellerChatButton";
+import { DEMO_MODE } from "@/lib/demoMode";
+import { MOCK_LISTINGS, MOCK_SELLERS } from "@/lib/mockData";
+import type { Profile } from "@/lib/types";
 
 export default async function SellerPage(props: PageProps<"/seller/[id]">) {
   const { id } = await props.params;
-  const supabase = await createClient();
 
-  const { data: seller } = await supabase.from("profiles").select("*").eq("id", id).maybeSingle();
-  if (!seller) notFound();
+  let seller: Profile | null;
+  let listings: ListingWithSeller[];
+  let swapCount = 0;
 
-  const { data: listingRows } = await supabase
-    .from("listings")
-    .select("*, seller:profiles(*)")
-    .eq("seller_id", id)
-    .eq("status", "live")
-    .order("created_at", { ascending: false });
-  const listings = (listingRows as unknown as ListingWithSeller[]) || [];
+  if (DEMO_MODE) {
+    seller = Object.values(MOCK_SELLERS).find((s) => s.id === id) || null;
+    if (!seller) notFound();
+    listings = MOCK_LISTINGS.filter((l) => l.seller_id === id);
+  } else {
+    const supabase = await createClient();
+    const { data } = await supabase.from("profiles").select("*").eq("id", id).maybeSingle();
+    seller = data;
+    if (!seller) notFound();
 
-  const { count: swapCount } = await supabase
-    .from("swap_offers")
-    .select("id", { count: "exact", head: true })
-    .eq("status", "accepted")
-    .in("listing_id", listings.map((l) => l.id).length ? listings.map((l) => l.id) : ["00000000-0000-0000-0000-000000000000"]);
+    const { data: listingRows } = await supabase
+      .from("listings")
+      .select("*, seller:profiles(*)")
+      .eq("seller_id", id)
+      .eq("status", "live")
+      .order("created_at", { ascending: false });
+    listings = (listingRows as unknown as ListingWithSeller[]) || [];
+
+    const { count } = await supabase
+      .from("swap_offers")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "accepted")
+      .in("listing_id", listings.map((l) => l.id).length ? listings.map((l) => l.id) : ["00000000-0000-0000-0000-000000000000"]);
+    swapCount = count || 0;
+  }
 
   const stats = [
     { n: String(listings.length), label: "plants listed" },

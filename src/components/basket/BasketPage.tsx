@@ -9,6 +9,8 @@ import { money } from "@/lib/format";
 import { useCart } from "@/components/ListStateProvider";
 import { useAuth } from "@/components/AuthProvider";
 import { useToast } from "@/components/ToastProvider";
+import { DEMO_MODE } from "@/lib/demoMode";
+import { MOCK_LISTINGS } from "@/lib/mockData";
 
 export function BasketPage() {
   const supabase = createClient();
@@ -23,6 +25,11 @@ export function BasketPage() {
   useEffect(() => {
     if (!cart.ids.length) {
       setListings([]);
+      setLoading(false);
+      return;
+    }
+    if (DEMO_MODE) {
+      setListings(MOCK_LISTINGS.filter((l) => cart.ids.includes(l.id)));
       setLoading(false);
       return;
     }
@@ -43,6 +50,12 @@ export function BasketPage() {
     if (!listings.length) return flash("Your basket is empty");
     requireAuth("in", {
       onSuccess: async () => {
+        if (DEMO_MODE) {
+          setOrdered(true);
+          cart.clear();
+          window.scrollTo(0, 0);
+          return;
+        }
         const { data: authData } = await supabase.auth.getUser();
         const uid = authData.user?.id;
         if (!uid) return;

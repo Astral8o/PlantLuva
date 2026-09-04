@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { ensureThread } from "@/lib/messaging";
 import { useToast } from "@/components/ToastProvider";
+import { DEMO_MODE } from "@/lib/demoMode";
 
 export function SellerChatButton({ sellerId, firstName }: { sellerId: string; firstName: string }) {
   const router = useRouter();
@@ -15,6 +16,10 @@ export function SellerChatButton({ sellerId, firstName }: { sellerId: string; fi
   async function goChat() {
     requireAuth("in", {
       onSuccess: async () => {
+        if (DEMO_MODE) {
+          flash("Messaging is disabled in demo mode");
+          return;
+        }
         const { data: authData } = await supabase.auth.getUser();
         const uid = authData.user?.id;
         if (!uid) return;

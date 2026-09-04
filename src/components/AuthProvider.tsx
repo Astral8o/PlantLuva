@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/lib/types";
 import { useToast } from "@/components/ToastProvider";
 import { MODES } from "@/lib/constants";
+import { DEMO_MODE } from "@/lib/demoMode";
 
 interface AuthContextValue {
   user: User | null;
@@ -49,6 +50,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   useEffect(() => {
+    if (DEMO_MODE) {
+      setLoading(false);
+      return;
+    }
     supabase.auth.getSession().then(({ data }) => {
       setUser(data.session?.user ?? null);
       if (data.session?.user) loadProfile(data.session.user.id);
@@ -114,6 +119,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function submit() {
     if (!email.trim() || !password.trim()) return flash("Enter your email and password");
+    if (DEMO_MODE) {
+      const displayName = name || email.split("@")[0];
+      const firstName = displayName.split(" ")[0];
+      setUser({ id: "demo-user", email } as User);
+      setProfile({
+        id: "demo-user",
+        name: displayName,
+        first_name: firstName,
+        region: "Port of Spain",
+        bio: null,
+        avatar_url: null,
+        rating: 5,
+        is_grower: true,
+        created_at: new Date().toISOString(),
+      });
+      setModalOpen(false);
+      setPassword("");
+      flash(mode === "up" ? "Account created. Welcome to PlantLuva" : "Signed in");
+      successRef.current?.();
+      return;
+    }
     if (mode === "up") {
       const { error } = await supabase.auth.signUp({
         email,
@@ -133,6 +159,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function signOut() {
+    if (DEMO_MODE) {
+      setUser(null);
+      setProfile(null);
+      flash("Signed out");
+      return;
+    }
     await supabase.auth.signOut();
     flash("Signed out");
   }

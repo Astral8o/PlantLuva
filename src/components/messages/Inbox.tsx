@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { timeAgo } from "@/lib/format";
 import type { Profile } from "@/lib/types";
+import { DEMO_MODE } from "@/lib/demoMode";
 
 interface ThreadVM {
   id: string;
@@ -36,6 +37,11 @@ export function Inbox() {
 
   useEffect(() => {
     if (!user) {
+      setLoading(false);
+      return;
+    }
+    if (DEMO_MODE) {
+      setThreads([]);
       setLoading(false);
       return;
     }
@@ -74,7 +80,7 @@ export function Inbox() {
   }, [user, supabase]);
 
   useEffect(() => {
-    if (!activeThreadId) {
+    if (!activeThreadId || DEMO_MODE) {
       setMessages([]);
       return;
     }
@@ -102,6 +108,7 @@ export function Inbox() {
   const activeThread = useMemo(() => threads.find((t) => t.id === activeThreadId), [threads, activeThreadId]);
 
   async function send() {
+    if (DEMO_MODE) return;
     const text = draft.trim();
     if (!text || !user || !activeThreadId) return;
     setDraft("");
@@ -133,7 +140,7 @@ export function Inbox() {
       ) : threads.length === 0 ? (
         <div style={{ border: "1.5px dashed rgba(58,38,17,.22)", borderRadius: 20, padding: "70px 30px", textAlign: "center" }}>
           <div style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 19 }}>No conversations yet</div>
-          <p style={{ color: "#7A6A4E", fontSize: 14.5, margin: "10px 0 20px" }}>Message a seller from any listing to start one.</p>
+          <p style={{ color: "#7A6A4E", fontSize: 14.5, margin: "10px 0 20px" }}>{DEMO_MODE ? "Messaging is disabled in demo mode." : "Message a seller from any listing to start one."}</p>
           <Link href="/" style={{ border: 0, background: "#6A9331", color: "#F5EEDC", padding: "13px 24px", borderRadius: 999, fontSize: 13.5, fontWeight: 700 }}>
             Back to the marketplace
           </Link>

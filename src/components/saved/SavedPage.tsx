@@ -7,6 +7,8 @@ import type { ListingWithSeller } from "@/lib/types";
 import { buildCardVM } from "@/lib/listingHelpers";
 import { PlantCard } from "@/components/PlantCard";
 import { useSaved } from "@/components/ListStateProvider";
+import { DEMO_MODE } from "@/lib/demoMode";
+import { MOCK_LISTINGS } from "@/lib/mockData";
 
 export function SavedPage() {
   const supabase = createClient();
@@ -17,6 +19,11 @@ export function SavedPage() {
   useEffect(() => {
     if (!saved.ids.length) {
       setListings([]);
+      setLoading(false);
+      return;
+    }
+    if (DEMO_MODE) {
+      setListings(MOCK_LISTINGS.filter((l) => saved.ids.includes(l.id)));
       setLoading(false);
       return;
     }

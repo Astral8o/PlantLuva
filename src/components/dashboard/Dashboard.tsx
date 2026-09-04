@@ -9,6 +9,8 @@ import { useToast } from "@/components/ToastProvider";
 import { MODES, type Mode } from "@/lib/constants";
 import { money, timeAgo } from "@/lib/format";
 import type { Listing } from "@/lib/types";
+import { DEMO_MODE } from "@/lib/demoMode";
+import { MOCK_SELLERS, MOCK_LISTINGS } from "@/lib/mockData";
 
 interface OfferVM {
   id: string;
@@ -33,11 +35,21 @@ export function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   async function respondSwap(id: string, status: "accepted" | "declined", uid: string) {
+    if (DEMO_MODE) {
+      setOffers((prev) => prev.filter((o) => o.id !== id));
+      flash(status === "accepted" ? "Offer accepted" : "Offer declined");
+      return;
+    }
     await supabase.from("swap_offers").update({ status }).eq("id", id);
     flash(status === "accepted" ? "Offer accepted" : "Offer declined");
     load(uid);
   }
   async function respondRental(id: string, status: "confirmed" | "declined", uid: string) {
+    if (DEMO_MODE) {
+      setOffers((prev) => prev.filter((o) => o.id !== id));
+      flash(status === "confirmed" ? "Dates confirmed" : "Request declined");
+      return;
+    }
     await supabase.from("rental_requests").update({ status }).eq("id", id);
     flash(status === "confirmed" ? "Dates confirmed" : "Request declined");
     load(uid);
@@ -45,6 +57,36 @@ export function Dashboard() {
 
   async function load(uid: string) {
     setLoading(true);
+
+    if (DEMO_MODE) {
+      const seller = MOCK_SELLERS.kavita;
+      const mine = MOCK_LISTINGS.filter((l) => l.seller_id === seller.id) as unknown as Listing[];
+      setListings(mine);
+      setOffers([
+        {
+          id: "demo-offer-1",
+          kind: "swap",
+          who: "Dexter",
+          when: timeAgo(new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString()),
+          text: "Offering a rooted Philodendron cutting for your " + (mine[0]?.name || "plant") + ".",
+          onAccept: () => respondSwap("demo-offer-1", "accepted", uid),
+          onDecline: () => respondSwap("demo-offer-1", "declined", uid),
+        },
+        {
+          id: "demo-offer-2",
+          kind: "rent",
+          who: "Shivani",
+          when: timeAgo(new Date(Date.now() - 1000 * 60 * 60 * 22).toISOString()),
+          text: "Wants " + (mine[1]?.name || "your plant") + " for 5 days.",
+          onAccept: () => respondRental("demo-offer-2", "confirmed", uid),
+          onDecline: () => respondRental("demo-offer-2", "declined", uid),
+        },
+      ]);
+      setSoldTotal(1240);
+      setSoldCount(3);
+      setLoading(false);
+      return;
+    }
     const { data: listingRows } = await supabase.from("listings").select("*").eq("seller_id", uid).order("created_at", { ascending: false });
     const rows = listingRows || [];
     setListings(rows);

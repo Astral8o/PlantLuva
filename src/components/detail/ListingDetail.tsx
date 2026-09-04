@@ -13,6 +13,8 @@ import { useAuth } from "@/components/AuthProvider";
 import { useCart, useSaved } from "@/components/ListStateProvider";
 import { useToast } from "@/components/ToastProvider";
 import { ensureThread } from "@/lib/messaging";
+import { DEMO_MODE } from "@/lib/demoMode";
+import { MOCK_LISTINGS, MOCK_BIDS } from "@/lib/mockData";
 
 const ALL_IMAGES = ["/img/gloriosum.png", "/img/cone.png", "/img/selloum.png", "/img/jungle.png", "/img/carry.png"];
 
@@ -56,6 +58,25 @@ export function ListingDetail({ id }: { id: string }) {
 
   async function load() {
     setLoading(true);
+    if (DEMO_MODE) {
+      const row = MOCK_LISTINGS.find((l) => l.id === id) || null;
+      if (!row) {
+        setNotFound(true);
+        setLoading(false);
+        return;
+      }
+      setListing(row);
+      setRentRegion(row.region);
+      setBids((MOCK_BIDS[id] || []).slice().sort((a, b) => b.amount - a.amount));
+      setRelated(MOCK_LISTINGS.filter((l) => l.id !== id).slice(0, 4));
+      setSellerCount(MOCK_LISTINGS.filter((l) => l.seller_id === row.seller_id).length);
+      setThumbIdx(0);
+      setSwapSent(false);
+      setRentSent(false);
+      setBidTyped("");
+      setLoading(false);
+      return;
+    }
     const { data } = await supabase.from("listings").select("*, seller:profiles(*)").eq("id", id).maybeSingle();
     if (!data) {
       setNotFound(true);
@@ -142,6 +163,12 @@ export function ListingDetail({ id }: { id: string }) {
     if (amount <= high) return flash("Your bid must be higher than " + money(high));
     requireAuth("in", {
       onSuccess: async () => {
+        if (DEMO_MODE) {
+          setBids((prev) => [{ id: "demo-" + Date.now(), amount, created_at: new Date().toISOString(), bidder_id: "you", bidder_name: "You" }, ...prev].sort((a, b) => b.amount - a.amount));
+          flash("You are the high bidder. Card pre-authorised via WiPay.");
+          setBidTyped("");
+          return;
+        }
         const { data: authData } = await supabase.auth.getUser();
         const uid = authData.user?.id;
         if (!uid) return;
@@ -163,6 +190,11 @@ export function ListingDetail({ id }: { id: string }) {
     if (!items.length) return flash("Say what you're offering off your shelf first");
     requireAuth("in", {
       onSuccess: async () => {
+        if (DEMO_MODE) {
+          setSwapSent(true);
+          flash("Offer sent to " + seller.first_name);
+          return;
+        }
         const { data: authData } = await supabase.auth.getUser();
         const uid = authData.user?.id;
         if (!uid) return;
@@ -178,6 +210,11 @@ export function ListingDetail({ id }: { id: string }) {
     if (!listing) return;
     requireAuth("in", {
       onSuccess: async () => {
+        if (DEMO_MODE) {
+          setRentSent(true);
+          flash("Request sent to " + seller.first_name);
+          return;
+        }
         const { data: authData } = await supabase.auth.getUser();
         const uid = authData.user?.id;
         if (!uid) return;
@@ -207,6 +244,10 @@ export function ListingDetail({ id }: { id: string }) {
   async function goChat() {
     requireAuth("in", {
       onSuccess: async () => {
+        if (DEMO_MODE) {
+          flash("Messaging is disabled in demo mode");
+          return;
+        }
         const { data: authData } = await supabase.auth.getUser();
         const uid = authData.user?.id;
         if (!uid || !listing) return;

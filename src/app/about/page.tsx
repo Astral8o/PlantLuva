@@ -4,6 +4,8 @@ import type { ListingWithSeller } from "@/lib/types";
 import { buildCardVM } from "@/lib/listingHelpers";
 import { PlantCard } from "@/components/PlantCard";
 import { MODES, type Mode } from "@/lib/constants";
+import { DEMO_MODE } from "@/lib/demoMode";
+import { MOCK_LISTINGS } from "@/lib/mockData";
 
 export const metadata = {
   title: "About | PlantLuva",
@@ -17,18 +19,24 @@ const MODE_CARDS: [Mode, string, string, string][] = [
 ];
 
 export default async function AboutPage() {
-  const supabase = await createClient();
-  const { data: listingRows } = await supabase
-    .from("listings")
-    .select("*, seller:profiles(*)")
-    .eq("status", "live")
-    .order("created_at", { ascending: false })
-    .limit(4);
-  const listings = (listingRows as unknown as ListingWithSeller[]) || [];
+  let listings: ListingWithSeller[];
+  let counts: Record<string, number> = {};
+  if (DEMO_MODE) {
+    listings = MOCK_LISTINGS.slice(0, 4);
+    for (const l of MOCK_LISTINGS) counts[l.mode] = (counts[l.mode] || 0) + 1;
+  } else {
+    const supabase = await createClient();
+    const { data: listingRows } = await supabase
+      .from("listings")
+      .select("*, seller:profiles(*)")
+      .eq("status", "live")
+      .order("created_at", { ascending: false })
+      .limit(4);
+    listings = (listingRows as unknown as ListingWithSeller[]) || [];
 
-  const { data: allLive } = await supabase.from("listings").select("mode").eq("status", "live");
-  const counts: Record<string, number> = {};
-  for (const l of allLive || []) counts[l.mode] = (counts[l.mode] || 0) + 1;
+    const { data: allLive } = await supabase.from("listings").select("mode").eq("status", "live");
+    for (const l of allLive || []) counts[l.mode] = (counts[l.mode] || 0) + 1;
+  }
 
   return (
     <div>

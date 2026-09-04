@@ -11,6 +11,8 @@ import { buildCardVM, highBid } from "@/lib/listingHelpers";
 import { PlantCard } from "@/components/PlantCard";
 import { useAuth } from "@/components/AuthProvider";
 import { useSaved } from "@/components/ListStateProvider";
+import { DEMO_MODE } from "@/lib/demoMode";
+import { MOCK_LISTINGS, MOCK_BIDS } from "@/lib/mockData";
 
 const PAGE_SIZE = 12;
 const MODE_TABS: [string, string][] = [
@@ -77,6 +79,14 @@ export function Marketplace() {
   }, [filtersOpen]);
 
   useEffect(() => {
+    if (DEMO_MODE) {
+      setListings(MOCK_LISTINGS);
+      const grouped: Record<string, { amount: number }[]> = {};
+      for (const [id, bids] of Object.entries(MOCK_BIDS)) grouped[id] = bids.map((b) => ({ amount: b.amount }));
+      setBidsByListing(grouped);
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     (async () => {
       setLoading(true);

@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { useToast } from "@/components/ToastProvider";
 import { MODES, REGIONS, SIZES, CARE_LEVELS, type Mode } from "@/lib/constants";
+import { DEMO_MODE } from "@/lib/demoMode";
 
 interface Draft {
   name: string;
@@ -128,6 +129,12 @@ export function SellWizard() {
     requireAuth("up", {
       seller: true,
       onSuccess: async () => {
+        if (DEMO_MODE) {
+          setPublished(true);
+          window.scrollTo(0, 0);
+          flash("Listing sent for review");
+          return;
+        }
         const { data: authData } = await supabase.auth.getUser();
         const uid = authData.user?.id;
         if (!uid) return;
