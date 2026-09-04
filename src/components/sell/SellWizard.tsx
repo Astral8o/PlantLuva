@@ -236,15 +236,18 @@ export function SellWizard() {
       {step === 1 ? (
         <div className="pl-rise" style={{ display: "grid", gap: 20 }}>
           <div>
-            <div style={labelStyle}>PHOTOS</div>
-            <div data-r="g4" style={{ display: "grid", gridTemplateColumns: "repeat(4,minmax(0,1fr))", gap: 12 }}>
+            <div style={labelStyle}>PHOTOS · UP TO 5</div>
+            <div data-r="g4" style={{ display: "grid", gridTemplateColumns: "repeat(5,minmax(0,1fr))", gap: 12 }}>
               <div style={{ aspectRatio: "1", borderRadius: 14, overflow: "hidden" }}>
                 <img src="/img/pink-princess.jpg" alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </div>
-              <div style={{ aspectRatio: "1", border: "1.5px dashed rgba(58,38,17,.3)", borderRadius: 14, display: "grid", placeItems: "center", color: "#6F6249", fontSize: 13, textAlign: "center" }}>
-                Photo upload coming soon
-              </div>
+              {[1, 2, 3, 4].map((n) => (
+                <div key={n} style={{ aspectRatio: "1", border: "1.5px dashed rgba(58,38,17,.3)", borderRadius: 14, display: "grid", placeItems: "center", color: "#A79B7E", fontSize: 22 }}>
+                  +
+                </div>
+              ))}
             </div>
+            <p style={{ color: "#7A6A4E", fontSize: 12.5, margin: "9px 0 0" }}>Photo upload coming soon — for now every listing ships with its cover photo.</p>
           </div>
           <div data-r="g2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>

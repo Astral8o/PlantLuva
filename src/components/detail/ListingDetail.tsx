@@ -310,7 +310,7 @@ export function ListingDetail({ id }: { id: string }) {
             <img src={gallery[thumbIdx] || gallery[0]} alt={listing.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
           {gallery.length > 1 ? (
-            <div data-r="g4" style={{ display: "grid", gridTemplateColumns: "repeat(4,minmax(0,1fr))", gap: 10, marginTop: 10 }}>
+            <div data-r="g4" style={{ display: "grid", gridTemplateColumns: `repeat(${gallery.length},minmax(0,1fr))`, gap: 10, marginTop: 10 }}>
               {gallery.map((img, i) => (
                 <button
                   key={i}

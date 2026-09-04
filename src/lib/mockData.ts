@@ -50,6 +50,26 @@ export const MOCK_SELLERS: Record<string, Profile> = {
   },
 };
 
+const ALL_PHOTOS = [
+  "/img/pink-princess.jpg",
+  "/img/philodendron-black-bowl.jpg",
+  "/img/fishbone-cactus.jpg",
+  "/img/ficus-elastica-ruby.jpg",
+  "/img/monstera-corner.jpg",
+  "/img/calathea-gift-bag.jpg",
+  "/img/succulent-trio.jpg",
+  "/img/potting-shop.jpg",
+];
+
+function galleryFor(primary: string, index: number, category: "plant" | "merch"): string[] {
+  if (category === "merch") return [primary];
+  const others = ALL_PHOTOS.filter((p) => p !== primary);
+  const count = 2 + (index % 4); // 2 to 5 photos per plant listing
+  const imgs = [primary];
+  for (let i = 0; i < count - 1; i++) imgs.push(others[(index + i) % others.length]);
+  return imgs;
+}
+
 interface Raw {
   id: string;
   name: string;
@@ -96,7 +116,7 @@ const RAW: Raw[] = [
   { id: "m6", name: "Organic Plant Food, 500ml", latin: "PlantLuva merch", mode: "sale", price: 55, img: "/img/fishbone-cactus.jpg", seller: "kavita", region: "Port of Spain", size: "500ml", care: "Concentrate, dilute 1:10", light: "", blurb: "Seaweed and fish emulsion mix, the one Kavita uses on everything from aroids to orchids. Lasts about three months.", category: "merch" },
 ];
 
-export const MOCK_LISTINGS: ListingWithSeller[] = RAW.map((r) => ({
+export const MOCK_LISTINGS: ListingWithSeller[] = RAW.map((r, i) => ({
   id: r.id,
   seller_id: MOCK_SELLERS[r.seller].id,
   name: r.name,
@@ -111,7 +131,7 @@ export const MOCK_LISTINGS: ListingWithSeller[] = RAW.map((r) => ({
   light: r.light,
   blurb: r.blurb,
   wants: r.wants ?? [],
-  images: [r.img],
+  images: galleryFor(r.img, i, r.category ?? "plant"),
   category: r.category ?? "plant",
   status: "live",
   created_at: now,
