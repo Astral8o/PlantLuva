@@ -168,7 +168,7 @@ export default async function AboutPage() {
             </Link>
           </div>
           <div style={{ position: "relative", borderRadius: 26, overflow: "hidden", minHeight: 320, display: "flex", alignItems: "flex-end" }}>
-            <img src="/img/selloum.png" alt="Statement plants for rent" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+            <img src="/img/monstera-corner.jpg" alt="Statement plants for rent" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(58,38,17,.9),transparent 68%)" }} />
             <div style={{ position: "relative", padding: 32 }}>
               <span style={{ display: "inline-block", background: "#EFB53F", color: "#3A2611", padding: "6px 13px", borderRadius: 999, fontSize: 10.5, fontWeight: 700, letterSpacing: ".1em" }}>FOR RENT</span>

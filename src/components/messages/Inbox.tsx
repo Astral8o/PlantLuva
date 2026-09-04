@@ -154,7 +154,7 @@ export function Inbox() {
                 onClick={() => router.push("/messages?thread=" + t.id)}
                 style={{ display: "flex", gap: 13, padding: "16px 18px", cursor: "pointer", background: t.id === activeThreadId ? "#FDF9EE" : "transparent", borderBottom: "1px solid rgba(58,38,17,.1)" }}
               >
-                <img src={t.counterpart?.avatar_url || "/img/carry.png"} alt={t.counterpart?.name} style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
+                <img src={t.counterpart?.avatar_url || "/img/potting-shop.jpg"} alt={t.counterpart?.name} style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
                 <div style={{ minWidth: 0, flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
                     <span style={{ fontWeight: 700, fontSize: 14.5 }}>{t.counterpart?.name}</span>
@@ -169,7 +169,7 @@ export function Inbox() {
             {activeThread ? (
               <>
                 <div style={{ display: "flex", alignItems: "center", gap: 13, padding: "15px 20px", borderBottom: "1px solid rgba(58,38,17,.14)" }}>
-                  <img src={activeThread.counterpart?.avatar_url || "/img/carry.png"} alt={activeThread.counterpart?.name} style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover" }} />
+                  <img src={activeThread.counterpart?.avatar_url || "/img/potting-shop.jpg"} alt={activeThread.counterpart?.name} style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover" }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontWeight: 700, fontSize: 15 }}>{activeThread.counterpart?.name}</div>
                     <div style={{ color: "#7A6A4E", fontSize: 12.5 }}>{activeThread.counterpart?.region}</div>

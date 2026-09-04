@@ -180,7 +180,7 @@ export function Dashboard() {
   return (
     <main data-r="pad" style={{ maxWidth: 1400, margin: "0 auto", padding: "32px 32px 90px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 30, flexWrap: "wrap" }}>
-        <img src={profile?.avatar_url || "/img/carry.png"} alt={profile?.name} style={{ width: 68, height: 68, borderRadius: "50%", objectFit: "cover" }} />
+        <img src={profile?.avatar_url || "/img/potting-shop.jpg"} alt={profile?.name} style={{ width: 68, height: 68, borderRadius: "50%", objectFit: "cover" }} />
         <div style={{ flex: 1, minWidth: 220 }}>
           <h1 style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 27, letterSpacing: "-.03em", margin: 0 }}>Morning, {profile?.first_name || "there"}</h1>
           <div style={{ color: "#7A6A4E", fontSize: 14, marginTop: 4 }}>
@@ -219,7 +219,7 @@ export function Dashboard() {
                       href={"/listing/" + l.id}
                       style={{ display: "flex", alignItems: "center", gap: 15, padding: "14px 20px", borderTop: "1px solid rgba(58,38,17,.1)", color: "inherit" }}
                     >
-                      <img src={l.images?.[0] || "/img/jungle.png"} alt={l.name} style={{ width: 52, height: 52, borderRadius: 10, objectFit: "cover" }} />
+                      <img src={l.images?.[0] || "/img/pink-princess.jpg"} alt={l.name} style={{ width: 52, height: 52, borderRadius: 10, objectFit: "cover" }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontWeight: 600, fontSize: 15 }}>{l.name}</div>
                         <div style={{ color: "#7A6A4E", fontSize: 12.5, marginTop: 3 }}>

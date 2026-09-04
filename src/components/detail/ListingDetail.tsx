@@ -16,7 +16,7 @@ import { ensureThread } from "@/lib/messaging";
 import { DEMO_MODE } from "@/lib/demoMode";
 import { MOCK_LISTINGS, MOCK_BIDS } from "@/lib/mockData";
 
-const ALL_IMAGES = ["/img/gloriosum.png", "/img/cone.png", "/img/selloum.png", "/img/jungle.png", "/img/carry.png"];
+const ALL_IMAGES = ["/img/pink-princess.jpg", "/img/monstera-corner.jpg", "/img/philodendron-black-bowl.jpg", "/img/calathea-gift-bag.jpg", "/img/potting-shop.jpg"];
 
 interface BidRow {
   id: string;
@@ -599,7 +599,7 @@ export function ListingDetail({ id }: { id: string }) {
 
           <div style={{ border: "1px solid rgba(58,38,17,.14)", borderRadius: 16, padding: 18, marginTop: 22 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
-              <img src={seller.avatar_url || "/img/carry.png"} alt={seller.name} style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover" }} />
+              <img src={seller.avatar_url || "/img/potting-shop.jpg"} alt={seller.name} style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover" }} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontWeight: 700, fontSize: 15, display: "flex", alignItems: "center", gap: 7 }}>
                   {seller.name}

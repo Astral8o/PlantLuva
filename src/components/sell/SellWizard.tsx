@@ -110,7 +110,7 @@ export function SellWizard() {
       start_bid: startBid,
       ends_at: endsAt,
       wants,
-      images: ["/img/gloriosum.png"],
+      images: ["/img/pink-princess.jpg"],
       status: "pending",
     };
   }
@@ -239,7 +239,7 @@ export function SellWizard() {
             <div style={labelStyle}>PHOTOS</div>
             <div data-r="g4" style={{ display: "grid", gridTemplateColumns: "repeat(4,minmax(0,1fr))", gap: 12 }}>
               <div style={{ aspectRatio: "1", borderRadius: 14, overflow: "hidden" }}>
-                <img src="/img/gloriosum.png" alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <img src="/img/pink-princess.jpg" alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </div>
               <div style={{ aspectRatio: "1", border: "1.5px dashed rgba(58,38,17,.3)", borderRadius: 14, display: "grid", placeItems: "center", color: "#6F6249", fontSize: 13, textAlign: "center" }}>
                 Photo upload coming soon
@@ -400,7 +400,7 @@ export function SellWizard() {
         <div className="pl-rise" style={{ display: "grid", gap: 20 }}>
           <div data-r="split" style={{ display: "grid", gridTemplateColumns: "210px 1fr", gap: 24, border: "1px solid rgba(58,38,17,.14)", borderRadius: 20, padding: 22 }}>
             <div style={{ aspectRatio: "4/5", borderRadius: 14, overflow: "hidden", background: "#EBE2CE" }}>
-              <img src="/img/gloriosum.png" alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src="/img/pink-princess.jpg" alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
             <div>
               <span style={{ display: "inline-block", background: MODES[draft.mode].bg, color: MODES[draft.mode].fg, padding: "5px 12px", borderRadius: 999, fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em" }}>

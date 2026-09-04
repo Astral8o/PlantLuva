@@ -112,7 +112,7 @@ export function BasketPage() {
               return (
                 <div key={l.id} style={{ display: "flex", alignItems: "center", gap: 16, border: "1px solid rgba(58,38,17,.14)", borderRadius: 16, padding: 14 }}>
                   <Link href={"/listing/" + l.id} style={{ display: "flex", alignItems: "center", gap: 16, flex: 1, minWidth: 0, color: "inherit" }}>
-                    <img src={l.images?.[0] || "/img/jungle.png"} alt={l.name} style={{ width: 78, height: 78, borderRadius: 12, objectFit: "cover" }} />
+                    <img src={l.images?.[0] || "/img/pink-princess.jpg"} alt={l.name} style={{ width: 78, height: 78, borderRadius: 12, objectFit: "cover" }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <span style={{ display: "inline-block", background: m.bg, color: m.fg, padding: "4px 10px", borderRadius: 999, fontSize: 9.5, fontWeight: 700, letterSpacing: ".1em" }}>{m.badge}</span>
                       <div style={{ fontFamily: "var(--font-gluten)", fontWeight: 600, fontSize: 16, marginTop: 7 }}>{l.name}</div>

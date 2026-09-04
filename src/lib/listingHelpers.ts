@@ -57,7 +57,7 @@ export function buildCardVM(
     id: listing.id,
     name: listing.name,
     latin: listing.latin_name || "",
-    img: listing.images?.[0] || "/img/jungle.png",
+    img: listing.images?.[0] || "/img/pink-princess.jpg",
     region: listing.region,
     sellerName: listing.seller?.name || "",
     sellerId: listing.seller_id,

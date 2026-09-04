@@ -55,7 +55,7 @@ export default async function SellerPage(props: PageProps<"/seller/[id]">) {
         ← BACK
       </Link>
       <div style={{ background: "#F5EEDC", borderRadius: 22, padding: 32, display: "flex", alignItems: "center", gap: 26, flexWrap: "wrap" }}>
-        <img src={seller.avatar_url || "/img/carry.png"} alt={seller.name} style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover" }} />
+        <img src={seller.avatar_url || "/img/potting-shop.jpg"} alt={seller.name} style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover" }} />
         <div style={{ flex: 1, minWidth: 240 }}>
           <h1 style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 28, letterSpacing: "-.03em", margin: 0, display: "flex", alignItems: "center", gap: 11, flexWrap: "wrap" }}>
             {seller.name}
