@@ -66,6 +66,7 @@ interface Raw {
   wants?: string[];
   startBid?: number;
   endsInDays?: number;
+  category?: "plant" | "merch";
 }
 
 const RAW: Raw[] = [
@@ -87,6 +88,12 @@ const RAW: Raw[] = [
   { id: "l16", name: "Ficus Elastica Ruby", latin: "F. elastica", mode: "sale", price: 320, img: "/img/ficus-elastica-ruby.jpg", seller: "andre", region: "Tobago", size: "Large", care: "Easy", light: "Bright light", blurb: "Pink and cream new growth, 90cm tall, single trunk staked straight. Photographs better than it looks in person, and it looks good." },
   { id: "l17", name: "Fishbone Cactus", latin: "Epiphyllum anguliger", mode: "sale", price: 140, img: "/img/fishbone-cactus.jpg", seller: "dexter", region: "Chaguanas", size: "Medium", care: "Easy", light: "Bright indirect", blurb: "Zigzag stems trailing out of a 6\" terracotta pot after a year of growth. Tough as nails once it's settled in, flowers in the cooler months if you're lucky." },
   { id: "l18", name: "Succulent Starter Trio", latin: "Assorted", mode: "sale", price: 75, img: "/img/succulent-trio.jpg", seller: "kavita", region: "Port of Spain", size: "Small", care: "Easy", light: "Bright light", blurb: "Three easy ones in 8cm ribbed pots, a jade, a haworthia and a crassula. The set I hand new plant parents who swear they'll kill everything." },
+  { id: "m1", name: "PlantLuva Canvas Tote", latin: "PlantLuva merch", mode: "sale", price: 60, img: "/img/calathea-gift-bag.jpg", seller: "andre", region: "Tobago", size: "One size", care: "100% cotton canvas", light: "", blurb: "Sturdy enough for a gallon nursery pot without stretching. Natural canvas, PlantLuva heart screen-printed on the front.", category: "merch" },
+  { id: "m2", name: "Ribbed Ceramic Pot Trio", latin: "PlantLuva merch", mode: "sale", price: 120, img: "/img/succulent-trio.jpg", seller: "kavita", region: "Port of Spain", size: "Small", care: "Glazed ceramic, drainage hole", light: "", blurb: "Three ribbed 8cm pots in navy, cream and terracotta. Drainage hole and rubber foot on each, saucer not included.", category: "merch" },
+  { id: "m3", name: "PlantLuva Logo Tee", latin: "PlantLuva merch", mode: "sale", price: 90, img: "/img/potting-shop.jpg", seller: "dexter", region: "Chaguanas", size: "Medium", care: "Heavyweight cotton, screen print", light: "", blurb: "The shirt half the growers on this shelf wear to markets. Runs true to size, wash cold.", category: "merch" },
+  { id: "m4", name: "Stainless Pruning Shears", latin: "PlantLuva merch", mode: "sale", price: 85, img: "/img/philodendron-black-bowl.jpg", seller: "shivani", region: "San Fernando", size: "One size", care: "Stainless steel, non-stick coating", light: "", blurb: "Sharp enough for a clean node cut, small enough for fussy aroids. Comes with a leather thumb strap.", category: "merch" },
+  { id: "m5", name: "Moisture Meter", latin: "PlantLuva merch", mode: "sale", price: 45, img: "/img/monstera-corner.jpg", seller: "andre", region: "Tobago", size: "One size", care: "No batteries required", light: "", blurb: "Probe it to the root ball and it tells you dry, moist or wet, no more guessing with fussy plants.", category: "merch" },
+  { id: "m6", name: "Organic Plant Food, 500ml", latin: "PlantLuva merch", mode: "sale", price: 55, img: "/img/fishbone-cactus.jpg", seller: "kavita", region: "Port of Spain", size: "500ml", care: "Concentrate, dilute 1:10", light: "", blurb: "Seaweed and fish emulsion mix, the one Kavita uses on everything from aroids to orchids. Lasts about three months.", category: "merch" },
 ];
 
 export const MOCK_LISTINGS: ListingWithSeller[] = RAW.map((r) => ({
@@ -105,6 +112,7 @@ export const MOCK_LISTINGS: ListingWithSeller[] = RAW.map((r) => ({
   blurb: r.blurb,
   wants: r.wants ?? [],
   images: [r.img],
+  category: r.category ?? "plant",
   status: "live",
   created_at: now,
   seller: MOCK_SELLERS[r.seller],

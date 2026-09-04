@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { ListingWithSeller } from "@/lib/types";
-import { MODES, type Mode } from "@/lib/constants";
+import { MODES, MERCH_BADGE, type Mode } from "@/lib/constants";
 import { money, countdown, timeAgo, initials } from "@/lib/format";
 import { buildCardVM, highBid } from "@/lib/listingHelpers";
 import { PlantCard } from "@/components/PlantCard";
@@ -149,7 +149,8 @@ export function ListingDetail({ id }: { id: string }) {
   }
 
   const mode = listing.mode as Mode;
-  const m = MODES[mode];
+  const isMerch = listing.category === "merch";
+  const m = isMerch ? MERCH_BADGE : MODES[mode];
   const favored = saved.has(listing.id);
   const high = highBid(listing, bids);
   const inCart = cart.has(listing.id);
@@ -259,7 +260,14 @@ export function ListingDetail({ id }: { id: string }) {
     });
   }
 
-  const specs = [
+  const specs = isMerch
+    ? [
+        { label: "MATERIAL", value: listing.care || "—" },
+        { label: "SIZE", value: listing.size || "—" },
+        { label: "HANDOVER", value: "Collect or courier" },
+        { label: "LISTED", value: timeAgo(listing.created_at) },
+      ]
+    : [
     { label: "SIZE", value: listing.size || "—" },
     { label: "CARE", value: listing.care || "—" },
     { label: "LIGHT", value: listing.light || "—" },
@@ -315,9 +323,9 @@ export function ListingDetail({ id }: { id: string }) {
             </div>
           ) : null}
           <div style={{ marginTop: 26 }}>
-            <h2 style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 18, margin: "0 0 12px" }}>About this plant</h2>
+            <h2 style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 18, margin: "0 0 12px" }}>{isMerch ? "About this item" : "About this plant"}</h2>
             <p style={{ color: "#63543A", fontSize: 15.5, lineHeight: 1.65, margin: "0 0 20px" }}>{listing.blurb}</p>
-            <div data-r="g3" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 1, background: "rgba(58,38,17,.14)", border: "1px solid rgba(58,38,17,.14)", borderRadius: 14, overflow: "hidden" }}>
+            <div data-r="g3" style={{ display: "grid", gridTemplateColumns: isMerch ? "repeat(2,1fr)" : "repeat(3,1fr)", gap: 1, background: "rgba(58,38,17,.14)", border: "1px solid rgba(58,38,17,.14)", borderRadius: 14, overflow: "hidden" }}>
               {specs.map((s) => (
                 <div key={s.label} style={{ background: "#FDF9EE", padding: "15px 17px" }}>
                   <div style={{ color: "#6F6249", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em" }}>{s.label}</div>
@@ -610,7 +618,7 @@ export function ListingDetail({ id }: { id: string }) {
                 </div>
               </div>
               <Link href={"/seller/" + seller.id} style={{ border: "1px solid rgba(58,38,17,.2)", background: "none", padding: "10px 15px", borderRadius: 999, fontSize: 12.5, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>
-                See their {sellerCount} plants
+                See their {sellerCount} listings
               </Link>
             </div>
           </div>

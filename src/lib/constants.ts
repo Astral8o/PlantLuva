@@ -10,6 +10,8 @@ export const MODES: Record<
   rent: { badge: "FOR RENT", bg: "#EFB53F", fg: "#3A2611", dot: "#EFB53F", price: "#3A2611" },
 };
 
+export const MERCH_BADGE = { badge: "MERCH", bg: "#5C8AA6", fg: "#FDF9EE", dot: "#5C8AA6", price: "#2C4A5E" };
+
 export const REGIONS = [
   "Port of Spain",
   "San Fernando",

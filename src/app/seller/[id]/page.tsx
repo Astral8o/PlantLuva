@@ -43,7 +43,7 @@ export default async function SellerPage(props: PageProps<"/seller/[id]">) {
   }
 
   const stats = [
-    { n: String(listings.length), label: "plants listed" },
+    { n: String(listings.length), label: "listed" },
     { n: (seller.rating ?? 5).toFixed(1), label: "seller rating" },
     { n: String(listings.length), label: "active listings" },
     { n: String(swapCount || 0), label: "swaps completed" },
@@ -78,7 +78,7 @@ export default async function SellerPage(props: PageProps<"/seller/[id]">) {
           </div>
         ))}
       </div>
-      <h2 style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 19, letterSpacing: "-.02em", margin: "0 0 18px" }}>{seller.first_name}&apos;s plants</h2>
+      <h2 style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 19, letterSpacing: "-.02em", margin: "0 0 18px" }}>{seller.first_name}&apos;s shelf</h2>
       <div data-r="g4" style={{ display: "grid", gridTemplateColumns: "repeat(4,minmax(0,1fr))", gap: 22 }}>
         {listings.map((l) => (
           <PlantCard key={l.id} vm={buildCardVM(l, [], false, Date.now())} large={false} />

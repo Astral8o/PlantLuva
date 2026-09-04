@@ -1,4 +1,4 @@
-import { MODES, type Mode } from "@/lib/constants";
+import { MODES, MERCH_BADGE, type Mode } from "@/lib/constants";
 import { money, countdown } from "@/lib/format";
 import type { ListingWithSeller } from "@/lib/types";
 
@@ -51,7 +51,7 @@ export function buildCardVM(
   favored: boolean,
   now: number
 ): CardVM {
-  const m = MODES[listing.mode as Mode];
+  const m = listing.category === "merch" ? MERCH_BADGE : MODES[listing.mode as Mode];
   const bidCount = bids.length;
   return {
     id: listing.id,

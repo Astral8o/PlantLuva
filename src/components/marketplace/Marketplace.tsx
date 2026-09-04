@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { ListingWithSeller } from "@/lib/types";
-import { MODES, REGIONS, SIZES, CARE_LEVELS, type Mode } from "@/lib/constants";
+import { MODES, MERCH_BADGE, REGIONS, SIZES, CARE_LEVELS, type Mode } from "@/lib/constants";
 import { money } from "@/lib/format";
 import { buildCardVM, highBid } from "@/lib/listingHelpers";
 import { PlantCard } from "@/components/PlantCard";
@@ -21,6 +21,7 @@ const MODE_TABS: [string, string][] = [
   ["bid", "Bidding"],
   ["swap", "Swap"],
   ["rent", "Rent"],
+  ["merch", "Accessories & Merch"],
 ];
 const SORTS: [string, string][] = [
   ["new", "Newest"],
@@ -118,7 +119,9 @@ export function Marketplace() {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     let out = listings.filter((l) => {
-      if (modeTab !== "all" && l.mode !== modeTab) return false;
+      if (modeTab === "merch") {
+        if (l.category !== "merch") return false;
+      } else if (modeTab !== "all" && l.mode !== modeTab) return false;
       if (q && !(l.name + " " + (l.latin_name || "")).toLowerCase().includes(q)) return false;
       if (regions.length && !regions.includes(l.region)) return false;
       if (sizes.length && !sizes.includes(l.size || "")) return false;
@@ -141,7 +144,9 @@ export function Marketplace() {
   const visible = filtered.slice((curPage - 1) * PAGE_SIZE, curPage * PAGE_SIZE);
 
   function countFor(k: string) {
-    return k === "all" ? listings.length : listings.filter((l) => l.mode === k).length;
+    if (k === "all") return listings.length;
+    if (k === "merch") return listings.filter((l) => l.category === "merch").length;
+    return listings.filter((l) => l.mode === k).length;
   }
   function toggleIn(list: string[], setList: (v: string[]) => void, val: string) {
     setList(list.includes(val) ? list.filter((v) => v !== val) : [...list, val]);
@@ -197,7 +202,10 @@ export function Marketplace() {
       ? "Live bidding"
       : modeTab === "swap"
       ? "Open for swaps"
+      : modeTab === "merch"
+      ? "Accessories & merch"
       : "Plants for rent";
+  const itemWord = modeTab === "merch" ? "item" : "plant";
 
   return (
     <div>
@@ -243,7 +251,10 @@ export function Marketplace() {
           <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 30, flexWrap: "wrap" }}>
             <div>
               <h1 style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 30, letterSpacing: "-.032em", margin: 0, lineHeight: 1 }}>{marketTitle}</h1>
-              <p style={{ color: "#7A6A4E", fontSize: 15, margin: "9px 0 0" }}>{filtered.length} plants · Trinidad &amp; Tobago · prices in TTD</p>
+              <p style={{ color: "#7A6A4E", fontSize: 15, margin: "9px 0 0" }}>
+                {filtered.length} {itemWord}
+                {filtered.length === 1 ? "" : "s"} · Trinidad &amp; Tobago · prices in TTD
+              </p>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 9, paddingBottom: 3, flexWrap: "wrap" }}>
               <button
@@ -308,7 +319,7 @@ export function Marketplace() {
                   flex: "0 0 auto",
                 }}
               >
-                <span style={{ width: 9, height: 9, borderRadius: "50%", background: k === "all" ? "#A79B7E" : MODES[k as Mode].dot }} />
+                <span style={{ width: 9, height: 9, borderRadius: "50%", background: k === "all" ? "#A79B7E" : k === "merch" ? MERCH_BADGE.dot : MODES[k as Mode].dot }} />
                 {label}
                 <span style={{ color: "#6F6249", fontWeight: 500, fontSize: 12.5 }}>{countFor(k)}</span>
               </button>
@@ -413,7 +424,8 @@ export function Marketplace() {
               width: "100%",
             }}
           >
-            Show {filtered.length} plant{filtered.length === 1 ? "" : "s"}
+            Show {filtered.length} {itemWord}
+            {filtered.length === 1 ? "" : "s"}
           </button>
         </aside>
 
