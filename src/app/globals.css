@@ -240,6 +240,13 @@ textarea:focus-visible,
   h1 {
     font-size: clamp(22px, 7vw, 30px) !important;
   }
+  [data-r~="sellerrow"] {
+    flex-wrap: wrap !important;
+  }
+  [data-r~="sellerrow"] .pl-seller-btn {
+    flex: 1 0 100%;
+    margin-top: 4px;
+  }
 }
 
 .pl-skip-link {

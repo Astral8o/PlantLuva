@@ -606,18 +606,18 @@ export function ListingDetail({ id }: { id: string }) {
           ) : null}
 
           <div style={{ border: "1px solid rgba(58,38,17,.14)", borderRadius: 16, padding: 18, marginTop: 22 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
-              <img src={seller.avatar_url || "/img/potting-shop.jpg"} alt={seller.name} style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover" }} />
+            <div data-r="sellerrow" style={{ display: "flex", alignItems: "center", gap: 15 }}>
+              <img src={seller.avatar_url || "/img/potting-shop.jpg"} alt={seller.name} style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontWeight: 700, fontSize: 15, display: "flex", alignItems: "center", gap: 7 }}>
-                  {seller.name}
-                  <span style={{ background: "#B0C35C", color: "#3A2611", fontSize: 9.5, fontWeight: 700, padding: "3px 7px", borderRadius: 999, letterSpacing: ".08em" }}>VERIFIED</span>
+                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{seller.name}</span>
+                  <span style={{ background: "#B0C35C", color: "#3A2611", fontSize: 9.5, fontWeight: 700, padding: "3px 7px", borderRadius: 999, letterSpacing: ".08em", flexShrink: 0 }}>VERIFIED</span>
                 </div>
                 <div style={{ color: "#7A6A4E", fontSize: 12.5, marginTop: 3 }}>
                   ★ {seller.rating?.toFixed(1) ?? "5.0"} · {seller.region}
                 </div>
               </div>
-              <Link href={"/seller/" + seller.id} style={{ border: "1px solid rgba(58,38,17,.2)", background: "none", padding: "10px 15px", borderRadius: 999, fontSize: 12.5, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>
+              <Link href={"/seller/" + seller.id} className="pl-seller-btn" style={{ border: "1px solid rgba(58,38,17,.2)", background: "none", padding: "10px 15px", borderRadius: 999, fontSize: 12.5, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", textAlign: "center" }}>
                 See their {sellerCount} listings
               </Link>
             </div>
