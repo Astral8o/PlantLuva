@@ -202,7 +202,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               overflowY: "auto",
               background: "#FDF9EE",
               borderRadius: 26,
-              overflow: "hidden",
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
               boxShadow: "0 28px 70px rgba(58,38,17,.35)",
