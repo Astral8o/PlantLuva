@@ -313,7 +313,7 @@ export function SellWizard() {
         <div className="pl-rise" style={{ display: "grid", gap: 20 }}>
           <div>
             <div style={labelStyle}>PHOTOS · UP TO 5</div>
-            <div data-r="g4" style={{ display: "grid", gridTemplateColumns: "repeat(5,minmax(0,1fr))", gap: 12 }}>
+            <div data-r="photog" style={{ display: "grid", gridTemplateColumns: "repeat(5,minmax(0,1fr))", gap: 12, maxWidth: 420 }}>
               <div style={{ aspectRatio: "1", borderRadius: 14, overflow: "hidden" }}>
                 <img src="/img/pink-princess.jpg" alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </div>
@@ -377,10 +377,16 @@ export function SellWizard() {
               style={{ ...inputStyle, resize: "vertical" }}
             />
           </div>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, flexWrap: "wrap" }}>
+            <button
+              onClick={() => addAnother()}
+              style={{ border: "1.5px solid #6A9331", background: "none", color: "#3A2611", padding: "15px 24px", borderRadius: 999, fontSize: 14, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}
+            >
+              + Save &amp; add another plant
+            </button>
             <button
               onClick={() => (draft.name.trim() ? setStep(2) : flash("Give this plant a name first"))}
-              style={{ border: 0, background: "#6A9331", color: "#F5EEDC", padding: "15px 30px", borderRadius: 999, fontSize: 14, fontWeight: 700, cursor: "pointer" }}
+              style={{ border: 0, background: "#6A9331", color: "#F5EEDC", padding: "15px 30px", borderRadius: 999, fontSize: 14, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}
             >
               Next: how to list it →
             </button>
