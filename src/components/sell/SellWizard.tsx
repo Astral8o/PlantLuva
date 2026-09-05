@@ -117,13 +117,38 @@ export function SellWizard() {
     };
   }
 
-  function addAnother() {
+  function addAnother(kind: "another" | "duplicate" = "another") {
     if (!draft.name.trim()) return flash("Give this plant a name first");
-    setBatch((b) => [...b, draft]);
-    setDraft(EMPTY_DRAFT(draft.region));
+    const saved = draft;
+    setBatch((b) => [...b, saved]);
+    setDraft(
+      kind === "duplicate"
+        ? { ...saved }
+        : {
+            ...EMPTY_DRAFT(saved.region),
+            size: saved.size,
+            care: saved.care,
+            light: saved.light,
+            mode: saved.mode,
+            delivery: saved.delivery,
+            auctionDays: saved.auctionDays,
+            deposit: saved.deposit,
+          }
+    );
     setStep(1);
     window.scrollTo({ top: 0, behavior: "smooth" });
-    flash(draft.name + " added. Now describe the next one");
+    flash(kind === "duplicate" ? "Duplicated " + saved.name + " — tweak what's different" : saved.name + " saved. Region, size, care and light carried over for the next one.");
+  }
+
+  function editQueued(i: number) {
+    const item = batch[i];
+    setBatch((b) => {
+      const rest = b.filter((_, j) => j !== i);
+      return draft.name.trim() ? [...rest, draft] : rest;
+    });
+    setDraft(item);
+    setStep(1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   async function publish() {
@@ -232,18 +257,28 @@ export function SellWizard() {
   return (
     <main data-r="pad" style={{ maxWidth: 900, margin: "0 auto", padding: "36px 32px 96px" }}>
       <h1 style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 29, letterSpacing: "-.03em", margin: "0 0 6px" }}>Post a plant</h1>
-      <p style={{ color: "#7A6A4E", fontSize: 13.5, margin: "0 0 24px" }}>
+      <p style={{ color: "#7A6A4E", fontSize: 13.5, margin: "0 0 6px" }}>
         Selling as {profile?.name || "you"} · {profile?.seller_type === "business" ? "Plant shop" : "Individual seller"}
       </p>
-      {batch.length ? (
+      {!batch.length ? (
+        <p style={{ color: "#7A6A4E", fontSize: 13, margin: "0 0 24px" }}>
+          Got more than one to list? Save each plant and keep going — you&apos;ll review and submit the whole shelf together at the end.
+        </p>
+      ) : (
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", background: "#DCE3BC", borderRadius: 14, padding: "12px 16px", marginBottom: 24 }}>
           <span style={{ fontWeight: 700, fontSize: 13.5, color: "#3A2611", flexShrink: 0 }}>
             {batch.length} plant{batch.length === 1 ? "" : "s"} queued
           </span>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", flex: 1 }}>
             {batch.map((b, i) => (
-              <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#FDF9EE", borderRadius: 999, padding: "5px 6px 5px 12px", fontSize: 12.5, color: "#3A2611" }}>
-                {b.name}
+              <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 2, background: "#FDF9EE", borderRadius: 999, padding: "5px 6px 5px 4px", fontSize: 12.5, color: "#3A2611" }}>
+                <button
+                  onClick={() => editQueued(i)}
+                  title="Edit this listing"
+                  style={{ border: 0, background: "none", color: "#3A2611", fontSize: 12.5, cursor: "pointer", padding: "2px 8px", font: "inherit" }}
+                >
+                  {b.name}
+                </button>
                 <button
                   onClick={() => setBatch((list) => list.filter((_, j) => j !== i))}
                   title="Remove"
@@ -260,7 +295,7 @@ export function SellWizard() {
             </button>
           ) : null}
         </div>
-      ) : null}
+      )}
       <div style={{ display: "flex", gap: 6, marginBottom: 32 }}>
         {[
           [1, "DETAILS"],
@@ -464,7 +499,7 @@ export function SellWizard() {
             </button>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               <button
-                onClick={addAnother}
+                onClick={() => addAnother()}
                 style={{ border: "1.5px solid #6A9331", background: "none", color: "#3A2611", padding: "15px 24px", borderRadius: 999, fontSize: 14, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}
               >
                 + Save &amp; add another plant
@@ -515,6 +550,13 @@ export function SellWizard() {
                       </div>
                     </div>
                     <button
+                      onClick={() => editQueued(i)}
+                      title="Edit"
+                      style={{ border: "1px solid rgba(58,38,17,.2)", background: "none", color: "#3A2611", fontSize: 12, fontWeight: 700, cursor: "pointer", padding: "6px 12px", borderRadius: 999, flexShrink: 0 }}
+                    >
+                      Edit
+                    </button>
+                    <button
                       onClick={() => setBatch((list) => list.filter((_, j) => j !== i))}
                       title="Remove"
                       style={{ border: 0, background: "none", color: "#7A6A4E", fontSize: 17, cursor: "pointer", padding: "0 4px", flexShrink: 0 }}
@@ -539,7 +581,14 @@ export function SellWizard() {
             </button>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               <button
-                onClick={addAnother}
+                onClick={() => addAnother("duplicate")}
+                title="Start the next listing as a copy of this one"
+                style={{ border: "1px solid rgba(58,38,17,.2)", background: "none", color: "#63543A", padding: "15px 20px", borderRadius: 999, fontSize: 14, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}
+              >
+                ⧉ Duplicate
+              </button>
+              <button
+                onClick={() => addAnother()}
                 style={{ border: "1.5px solid #6A9331", background: "none", color: "#3A2611", padding: "15px 24px", borderRadius: 999, fontSize: 14, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}
               >
                 + Add another plant
