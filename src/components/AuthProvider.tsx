@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [regNumber, setRegNumber] = useState("");
+  const [isRegistered, setIsRegistered] = useState(false);
   const successRef = useRef<(() => void) | undefined>(undefined);
   const lastFocus = useRef<HTMLElement | null>(null);
   const dialogRef = useRef<HTMLDivElement | null>(null);
@@ -365,16 +365,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                   </label>
                 ) : null}
                 {mode === "up" && forSeller && sellerType === "business" ? (
-                  <label style={{ display: "block" }}>
-                    <span style={{ display: "block", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em", color: "#7A6A4E", marginBottom: 6 }}>
-                      BUSINESS REG. # (OPTIONAL)
-                    </span>
+                  <label style={{ display: "flex", alignItems: "center", gap: 9, cursor: "pointer" }}>
                     <input
-                      value={regNumber}
-                      onChange={(e) => setRegNumber(e.target.value)}
-                      placeholder="BN-000000"
-                      style={inputStyle}
+                      type="checkbox"
+                      checked={isRegistered}
+                      onChange={(e) => setIsRegistered(e.target.checked)}
+                      style={{ width: 18, height: 18, accentColor: "#6A9331", cursor: "pointer" }}
                     />
+                    <span style={{ fontSize: 13.5, color: "#3A2611" }}>This is a registered business</span>
                   </label>
                 ) : null}
                 <label style={{ display: "block" }}>
