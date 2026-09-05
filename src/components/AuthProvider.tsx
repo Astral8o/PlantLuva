@@ -34,9 +34,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [mode, setMode] = useState<"in" | "up">("in");
   const [forSeller, setForSeller] = useState(false);
+  const [sellerType, setSellerType] = useState<"individual" | "business">("individual");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [regNumber, setRegNumber] = useState("");
   const successRef = useRef<(() => void) | undefined>(undefined);
   const lastFocus = useRef<HTMLElement | null>(null);
   const dialogRef = useRef<HTMLDivElement | null>(null);
@@ -121,7 +123,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!email.trim() || !password.trim()) return flash("Enter your email and password");
     if (DEMO_MODE) {
       const displayName = name || email.split("@")[0];
-      const firstName = displayName.split(" ")[0];
+      const firstName = forSeller && sellerType === "business" ? displayName : displayName.split(" ")[0];
       setUser({ id: "demo-user", email } as User);
       setProfile({
         id: "demo-user",
@@ -132,6 +134,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         avatar_url: null,
         rating: 5,
         is_grower: true,
+        seller_type: forSeller ? sellerType : "individual",
         created_at: new Date().toISOString(),
       });
       setModalOpen(false);
@@ -276,6 +279,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                   ? "Sign in to post a plant. We review every listing before it reaches the shelf, so buyers know what they are getting is safe and trusted."
                   : "Four ways to take a plant home off somebody else's shelf."}
               </p>
+              {forSeller && mode === "up" ? (
+                <div style={{ marginBottom: 20 }}>
+                  <span style={{ display: "block", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em", color: "#7A6A4E", marginBottom: 8 }}>
+                    HOW WILL YOU SELL?
+                  </span>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                    {(["individual", "business"] as const).map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setSellerType(t)}
+                        style={{
+                          border: "2px solid " + (sellerType === t ? "#6A9331" : "rgba(58,38,17,.14)"),
+                          background: sellerType === t ? "#F5EEDC" : "transparent",
+                          borderRadius: 12,
+                          padding: "12px 13px",
+                          textAlign: "left",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <div style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 14, color: "#3A2611" }}>
+                          {t === "individual" ? "Individual seller" : "Plant shop"}
+                        </div>
+                        <div style={{ color: "#7A6A4E", fontSize: 11.5, marginTop: 3, lineHeight: 1.35 }}>
+                          {t === "individual" ? "Selling from your own collection" : "A nursery or registered business"}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
               {!forSeller ? (
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 20 }}>
                   {[
@@ -321,12 +355,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 {mode === "up" ? (
                   <label style={{ display: "block" }}>
                     <span style={{ display: "block", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em", color: "#7A6A4E", marginBottom: 6 }}>
-                      NAME
+                      {forSeller && sellerType === "business" ? "SHOP / BUSINESS NAME" : "NAME"}
                     </span>
                     <input
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="Kavita Ramdeen"
+                      placeholder={forSeller && sellerType === "business" ? "Dexter's Backyard Nursery" : "Kavita Ramdeen"}
+                      style={inputStyle}
+                    />
+                  </label>
+                ) : null}
+                {mode === "up" && forSeller && sellerType === "business" ? (
+                  <label style={{ display: "block" }}>
+                    <span style={{ display: "block", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em", color: "#7A6A4E", marginBottom: 6 }}>
+                      BUSINESS REG. # (OPTIONAL)
+                    </span>
+                    <input
+                      value={regNumber}
+                      onChange={(e) => setRegNumber(e.target.value)}
+                      placeholder="BN-000000"
                       style={inputStyle}
                     />
                   </label>
@@ -378,7 +425,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 </button>
               </div>
               <p style={{ color: "#6F6249", fontSize: 12, lineHeight: 1.5, margin: "16px 0 0" }}>
-                Swapping is always free. Selling, bidding and renting carry the standard 6% fee on completed handovers.
+                Swapping is always free. Selling, bidding and renting carry the standard 8% transaction fee. Deliver it yourself for no extra cost, or let PlantLuva courier handle it for another 8%.
               </p>
             </div>
           </div>

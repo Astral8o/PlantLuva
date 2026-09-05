@@ -13,17 +13,19 @@ export const MOCK_SELLERS: Record<string, Profile> = {
     avatar_url: "/img/potting-shop.jpg",
     rating: 4.9,
     is_grower: true,
+    seller_type: "individual",
     created_at: now,
   },
   dexter: {
     id: "mock-dexter",
-    name: "Dexter M.",
+    name: "Dexter's Backyard Nursery",
     first_name: "Dexter",
     region: "Chaguanas",
-    bio: "Backyard nursery in Chaguanas. Big specimen plants for events, plus whatever the mother plants throw off.",
+    bio: "Registered nursery in Chaguanas. Big specimen plants for events, plus whatever the mother plants throw off.",
     avatar_url: "/img/monstera-corner.jpg",
     rating: 4.8,
     is_grower: true,
+    seller_type: "business",
     created_at: now,
   },
   shivani: {
@@ -35,6 +37,7 @@ export const MOCK_SELLERS: Record<string, Profile> = {
     avatar_url: "/img/philodendron-black-bowl.jpg",
     rating: 5.0,
     is_grower: true,
+    seller_type: "individual",
     created_at: now,
   },
   andre: {
@@ -46,6 +49,7 @@ export const MOCK_SELLERS: Record<string, Profile> = {
     avatar_url: "/img/calathea-gift-bag.jpg",
     rating: 4.7,
     is_grower: true,
+    seller_type: "individual",
     created_at: now,
   },
 };
@@ -87,25 +91,26 @@ interface Raw {
   startBid?: number;
   endsInDays?: number;
   category?: "plant" | "merch";
+  delivery?: "self" | "courier";
 }
 
 const RAW: Raw[] = [
   { id: "l1", name: "Philodendron Gloriosum", latin: "P. gloriosum", mode: "sale", price: 850, img: "/img/pink-princess.jpg", seller: "kavita", region: "Port of Spain", size: "Medium", care: "Easy", light: "Bright indirect", blurb: "Mother plant, three years in the same trough. Creeping rhizome with four established leaves and a fifth unfurling. Velvet leaves, cream veins, the real gloriosum, not a McDowell." },
-  { id: "l2", name: "Anthurium Warocqueanum", latin: "A. warocqueanum", mode: "bid", price: null, img: "/img/philodendron-black-bowl.jpg", seller: "shivani", region: "San Fernando", size: "Large", care: "Fussy", light: "Filtered morning sun", blurb: "Queen anthurium, 62cm longest leaf. Grown in a shade house in San Fernando, never seen a greenhouse import. Sold as-is, collection preferred.", startBid: 1200, endsInDays: 1.5 },
+  { id: "l2", name: "Anthurium Warocqueanum", latin: "A. warocqueanum", mode: "bid", price: null, img: "/img/philodendron-black-bowl.jpg", seller: "shivani", region: "San Fernando", size: "Large", care: "Fussy", light: "Filtered morning sun", blurb: "Queen anthurium, 62cm longest leaf. Grown in a shade house in San Fernando, never seen a greenhouse import. Sold as-is, collection preferred.", startBid: 1200, endsInDays: 1.5, delivery: "courier" },
   { id: "l3", name: "Monstera Deliciosa (mature)", latin: "M. deliciosa", mode: "rent", price: 350, img: "/img/monstera-corner.jpg", seller: "dexter", region: "Chaguanas", size: "Extra large", care: "Easy", light: "Anything", blurb: "1.8m across, twelve fenestrated leaves, sits in a matte black urn. Rents by the day for weddings, shoots and launches. Needs a van and two people." },
   { id: "l4", name: "Aglaonema Pictum Tricolour", latin: "A. pictum", mode: "swap", price: null, img: "/img/fishbone-cactus.jpg", seller: "shivani", region: "San Fernando", size: "Small", care: "Medium", light: "Low to medium", blurb: "Camouflage aglaonema, three heads in a 6\" pot. Not selling this one, looking to trade for something I do not have yet.", wants: ["Variegated Monstera", "Anthurium Clarinervium", "Philodendron Melanochrysum"] },
   { id: "l5", name: "Alocasia Frydek Variegata", latin: "A. micholitziana", mode: "bid", price: null, img: "/img/ficus-elastica-ruby.jpg", seller: "kavita", region: "Port of Spain", size: "Medium", care: "Fussy", light: "Bright indirect", blurb: "Half-moon variegation on two of five leaves, corm attached. Bidding closes Thursday night.", startBid: 600, endsInDays: 0.7 },
-  { id: "l6", name: "Heliconia Rostrata clump", latin: "H. rostrata", mode: "sale", price: 240, img: "/img/monstera-corner.jpg", seller: "andre", region: "Tobago", size: "Large", care: "Easy", light: "Full sun", blurb: "Hanging lobster claw, divided from a mature clump in Scarborough. Two rhizomes per bag, flowers in its second season." },
+  { id: "l6", name: "Heliconia Rostrata clump", latin: "H. rostrata", mode: "sale", price: 240, img: "/img/monstera-corner.jpg", seller: "andre", region: "Tobago", size: "Large", care: "Easy", light: "Full sun", blurb: "Hanging lobster claw, divided from a mature clump in Scarborough. Two rhizomes per bag, flowers in its second season.", delivery: "courier" },
   { id: "l7", name: "Philodendron Melanochrysum", latin: "P. melanochrysum", mode: "swap", price: null, img: "/img/philodendron-black-bowl.jpg", seller: "kavita", region: "Port of Spain", size: "Medium", care: "Medium", light: "Bright indirect", blurb: "Rooted top cut, two leaves already darkening. Trade only, I have too many of these and not enough of what you have.", wants: ["Anthurium Warocqueanum", "Philodendron Verrucosum", "Any Aglaonema Pictum"] },
   { id: "l8", name: "Cattleya Orchid (in spike)", latin: "Cattleya sp.", mode: "sale", price: 420, img: "/img/calathea-gift-bag.jpg", seller: "andre", region: "Tobago", size: "Small", care: "Medium", light: "Bright indirect", blurb: "In spike now, should open within three weeks. Mounted on hardwood, comes on the Wednesday ferry or collect in Scarborough." },
   { id: "l9", name: "Selloum Philodendron 1.8m", latin: "Thaumatophyllum bipinnatifidum", mode: "rent", price: 300, img: "/img/succulent-trio.jpg", seller: "dexter", region: "Chaguanas", size: "Extra large", care: "Easy", light: "Anything", blurb: "The one everybody rents for backdrops. Two available, matching black pots, delivered upright and collected next morning." },
-  { id: "l10", name: "Anthurium Crystallinum", latin: "A. crystallinum", mode: "sale", price: 560, img: "/img/potting-shop.jpg", seller: "shivani", region: "San Fernando", size: "Medium", care: "Medium", light: "Filtered light", blurb: "Silver-veined, six leaves, established in a 6\" net pot. Straight-forward grower once the humidity holds." },
+  { id: "l10", name: "Anthurium Crystallinum", latin: "A. crystallinum", mode: "sale", price: 560, img: "/img/potting-shop.jpg", seller: "shivani", region: "San Fernando", size: "Medium", care: "Medium", light: "Filtered light", blurb: "Silver-veined, six leaves, established in a 6\" net pot. Straight-forward grower once the humidity holds.", delivery: "courier" },
   { id: "l11", name: "Snake Plant Moonshine", latin: "Dracaena trifasciata", mode: "sale", price: 95, img: "/img/pink-princess.jpg", seller: "dexter", region: "Chaguanas", size: "Small", care: "Easy", light: "Anything", blurb: "Pale silver-green blades, three pups per pot. The plant you give somebody who says they kill everything." },
   { id: "l12", name: "Bird of Paradise (event size)", latin: "Strelitzia nicolai", mode: "rent", price: 400, img: "/img/philodendron-black-bowl.jpg", seller: "dexter", region: "Chaguanas", size: "Extra large", care: "Easy", light: "Full sun", blurb: "2.2m, ten paddle leaves, dramatic on either side of a doorway. Weekend rate covers Friday delivery to Sunday collection." },
   { id: "l13", name: "Calathea Makoyana", latin: "Goeppertia makoyana", mode: "swap", price: null, img: "/img/calathea-gift-bag.jpg", seller: "andre", region: "Tobago", size: "Small", care: "Fussy", light: "Low to medium", blurb: "Peacock plant, full pot, no crisp edges. Happy to trade for anything I can grow outside in Tobago.", wants: ["Heliconia divisions", "Cattleya orchids", "Alocasia Frydek"] },
-  { id: "l14", name: "Zamioculcas Zamiifolia", latin: "Z. zamiifolia", mode: "sale", price: 180, img: "/img/fishbone-cactus.jpg", seller: "kavita", region: "Port of Spain", size: "Medium", care: "Easy", light: "Low", blurb: "Seven stems, thick rhizome, has survived two vacations with no water. Excellent office plant." },
+  { id: "l14", name: "Zamioculcas Zamiifolia", latin: "Z. zamiifolia", mode: "sale", price: 180, img: "/img/fishbone-cactus.jpg", seller: "kavita", region: "Port of Spain", size: "Medium", care: "Easy", light: "Low", blurb: "Seven stems, thick rhizome, has survived two vacations with no water. Excellent office plant.", delivery: "courier" },
   { id: "l15", name: "Variegated Monstera Albo", latin: "M. deliciosa albo", mode: "bid", price: null, img: "/img/pink-princess.jpg", seller: "shivani", region: "San Fernando", size: "Medium", care: "Medium", light: "Bright indirect", blurb: "Three-node cutting, high variegation on both leaves, rooted in water and moved to bark. Serious bidders, this is a real albo, papers on request.", startBid: 2400, endsInDays: 2.5 },
-  { id: "l16", name: "Ficus Elastica Ruby", latin: "F. elastica", mode: "sale", price: 320, img: "/img/ficus-elastica-ruby.jpg", seller: "andre", region: "Tobago", size: "Large", care: "Easy", light: "Bright light", blurb: "Pink and cream new growth, 90cm tall, single trunk staked straight. Photographs better than it looks in person, and it looks good." },
+  { id: "l16", name: "Ficus Elastica Ruby", latin: "F. elastica", mode: "sale", price: 320, img: "/img/ficus-elastica-ruby.jpg", seller: "andre", region: "Tobago", size: "Large", care: "Easy", light: "Bright light", blurb: "Pink and cream new growth, 90cm tall, single trunk staked straight. Photographs better than it looks in person, and it looks good.", delivery: "courier" },
   { id: "l17", name: "Fishbone Cactus", latin: "Epiphyllum anguliger", mode: "sale", price: 140, img: "/img/fishbone-cactus.jpg", seller: "dexter", region: "Chaguanas", size: "Medium", care: "Easy", light: "Bright indirect", blurb: "Zigzag stems trailing out of a 6\" terracotta pot after a year of growth. Tough as nails once it's settled in, flowers in the cooler months if you're lucky." },
   { id: "l18", name: "Succulent Starter Trio", latin: "Assorted", mode: "sale", price: 75, img: "/img/succulent-trio.jpg", seller: "kavita", region: "Port of Spain", size: "Small", care: "Easy", light: "Bright light", blurb: "Three easy ones in 8cm ribbed pots, a jade, a haworthia and a crassula. The set I hand new plant parents who swear they'll kill everything." },
   { id: "m1", name: "PlantLuva Canvas Tote", latin: "PlantLuva merch", mode: "sale", price: 60, img: "/img/calathea-gift-bag.jpg", seller: "andre", region: "Tobago", size: "One size", care: "100% cotton canvas", light: "", blurb: "Sturdy enough for a gallon nursery pot without stretching. Natural canvas, PlantLuva heart screen-printed on the front.", category: "merch" },
@@ -133,6 +138,7 @@ export const MOCK_LISTINGS: ListingWithSeller[] = RAW.map((r, i) => ({
   wants: r.wants ?? [],
   images: galleryFor(r.img, i, r.category ?? "plant"),
   category: r.category ?? "plant",
+  delivery_method: r.mode === "swap" ? null : r.mode === "rent" ? "courier" : r.delivery ?? "self",
   status: "live",
   created_at: now,
   seller: MOCK_SELLERS[r.seller],

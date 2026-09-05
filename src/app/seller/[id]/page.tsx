@@ -59,7 +59,9 @@ export default async function SellerPage(props: PageProps<"/seller/[id]">) {
         <div style={{ flex: 1, minWidth: 240 }}>
           <h1 style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 28, letterSpacing: "-.03em", margin: 0, display: "flex", alignItems: "center", gap: 11, flexWrap: "wrap" }}>
             {seller.name}
-            <span style={{ background: "#B0C35C", color: "#3A2611", fontSize: 10, fontWeight: 700, padding: "4px 9px", borderRadius: 999, letterSpacing: ".09em" }}>VERIFIED GROWER</span>
+            <span style={{ background: seller.seller_type === "business" ? "#5C8AA6" : "#B0C35C", color: seller.seller_type === "business" ? "#FDF9EE" : "#3A2611", fontSize: 10, fontWeight: 700, padding: "4px 9px", borderRadius: 999, letterSpacing: ".09em" }}>
+              {seller.seller_type === "business" ? "PLANT SHOP" : "VERIFIED GROWER"}
+            </span>
           </h1>
           <div style={{ color: "#7A6A4E", fontSize: 14.5, marginTop: 7 }}>
             ★ {(seller.rating ?? 5).toFixed(1)} · {seller.region}

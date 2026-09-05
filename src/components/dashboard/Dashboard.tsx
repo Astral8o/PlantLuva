@@ -262,9 +262,9 @@ export function Dashboard() {
               </div>
               <div className="pl-dark" style={{ background: "#3A2611", borderRadius: 20, padding: 22, color: "#FDF9EE" }}>
                 <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".12em", color: "rgba(253,249,238,.6)" }}>WIPAY PAYOUT</div>
-                <div style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 24, color: "#B0C35C", margin: "9px 0 6px" }}>{money(soldTotal * 0.94)}</div>
+                <div style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 24, color: "#B0C35C", margin: "9px 0 6px" }}>{money(soldTotal * 0.92)}</div>
                 <div style={{ color: "rgba(253,249,238,.65)", fontSize: 13, lineHeight: 1.5, marginBottom: 16 }}>
-                  After the 6% fee on {soldCount} completed sale{soldCount === 1 ? "" : "s"}. Rental deposits are held separately until each plant comes back.
+                  After the 8% transaction fee on {soldCount} completed sale{soldCount === 1 ? "" : "s"} (courier deliveries carry another 8%). Rental deposits are held separately until each plant comes back.
                 </div>
                 <button style={{ border: "1px solid rgba(253,249,238,.3)", background: "none", color: "#FDF9EE", padding: "11px 18px", borderRadius: 999, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
                   Payout settings

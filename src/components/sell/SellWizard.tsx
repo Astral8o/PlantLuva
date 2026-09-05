@@ -21,6 +21,7 @@ interface Draft {
   openToText: string; // swap: also open to
   auctionDays: string; // bid: 1 | 3 | 7
   deposit: string; // rent
+  delivery: "self" | "courier";
 }
 
 const EMPTY_DRAFT = (region: string): Draft => ({
@@ -36,6 +37,7 @@ const EMPTY_DRAFT = (region: string): Draft => ({
   openToText: "",
   auctionDays: "3",
   deposit: "500",
+  delivery: "self",
 });
 
 const FIELD_LABELS: Record<Mode, { title: string; priceLabel: string; pricePh: string }> = {
@@ -59,7 +61,7 @@ const labelStyle: React.CSSProperties = { fontSize: 11, fontWeight: 700, letterS
 export function SellWizard() {
   const supabase = createClient();
   const router = useRouter();
-  const { user, loading: authLoading, requireAuth } = useAuth();
+  const { user, profile, loading: authLoading, requireAuth } = useAuth();
   const flash = useToast();
 
   const [step, setStep] = useState(1);
@@ -219,7 +221,10 @@ export function SellWizard() {
 
   return (
     <main data-r="pad" style={{ maxWidth: 900, margin: "0 auto", padding: "36px 32px 96px" }}>
-      <h1 style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 29, letterSpacing: "-.03em", margin: "0 0 24px" }}>Post a plant</h1>
+      <h1 style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 29, letterSpacing: "-.03em", margin: "0 0 6px" }}>Post a plant</h1>
+      <p style={{ color: "#7A6A4E", fontSize: 13.5, margin: "0 0 24px" }}>
+        Selling as {profile?.name || "you"} · {profile?.seller_type === "business" ? "Plant shop" : "Individual seller"}
+      </p>
       <div style={{ display: "flex", gap: 6, marginBottom: 32 }}>
         {[
           [1, "DETAILS"],
@@ -387,6 +392,35 @@ export function SellWizard() {
                 ))}
               </div>
             </div>
+            {draft.mode !== "swap" ? (
+              <div>
+                <div style={{ ...labelStyle, marginBottom: 10 }}>HOW WILL YOU DELIVER?</div>
+                <div data-r="g2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  {(["self", "courier"] as const).map((d) => (
+                    <button
+                      key={d}
+                      type="button"
+                      onClick={() => set("delivery", d)}
+                      style={{
+                        border: "2px solid " + (draft.delivery === d ? "#6A9331" : "rgba(58,38,17,.14)"),
+                        background: draft.delivery === d ? "#FDF9EE" : "transparent",
+                        borderRadius: 14,
+                        padding: "14px 15px",
+                        textAlign: "left",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <div style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 14 }}>
+                        {d === "self" ? "I'll deliver / meet up" : "PlantLuva courier"}
+                      </div>
+                      <div style={{ color: "#7A6A4E", fontSize: 12, marginTop: 4, lineHeight: 1.35 }}>
+                        {d === "self" ? "Collect or hand it over yourself, no extra fee" : "We arrange the courier, adds an 8% delivery fee"}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <button onClick={() => setStep(1)} style={{ border: "1px solid rgba(58,38,17,.2)", background: "none", padding: "15px 26px", borderRadius: 999, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
@@ -410,7 +444,9 @@ export function SellWizard() {
                 {MODES[draft.mode].badge}
               </span>
               <div style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 23, letterSpacing: "-.025em", margin: "13px 0 6px" }}>{draft.name}</div>
-              <div style={{ color: "#7A6A4E", fontSize: 13.5 }}>{draft.region} · listed today</div>
+              <div style={{ color: "#7A6A4E", fontSize: 13.5 }}>
+                {draft.region} · listed today{draft.mode !== "swap" ? " · " + (draft.delivery === "courier" ? "PlantLuva courier" : "Self delivery") : ""}
+              </div>
               <div style={{ fontWeight: 700, fontSize: 18, margin: "15px 0 11px" }}>
                 {draft.mode === "swap" ? "Up for trade" : draft.mode === "rent" ? "TT$" + (draft.price || "300") + "/day" : "TT$" + (draft.price || "0")}
               </div>
@@ -449,7 +485,9 @@ export function SellWizard() {
           <div style={{ background: "#DCE3BC", borderRadius: 16, padding: 20, fontSize: 14, lineHeight: 1.55, color: "#63543A" }}>
             {draft.mode === "swap"
               ? "Label it with the species and how you grow it, check it over for pests, and be willing to part with it. Trades are between the two of you; we just hold the chat and the handover record."
-              : "PlantLuva takes 6% when the plant sells or the rental completes. Payouts reach your bank two working days after handover, or your WiPay wallet the same evening."}
+              : draft.delivery === "courier"
+              ? "PlantLuva takes 8% when the plant sells or the rental completes, plus 8% for courier delivery — 16% total. Payouts reach your bank two working days after handover, or your WiPay wallet the same evening."
+              : "PlantLuva takes 8% when the plant sells or the rental completes. You're handling delivery yourself, so no extra delivery fee applies. Payouts reach your bank two working days after handover, or your WiPay wallet the same evening."}
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
             <button onClick={() => setStep(2)} style={{ border: "1px solid rgba(58,38,17,.2)", background: "none", padding: "15px 26px", borderRadius: 999, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>

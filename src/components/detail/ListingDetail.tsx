@@ -272,7 +272,7 @@ export function ListingDetail({ id }: { id: string }) {
     { label: "CARE", value: listing.care || "—" },
     { label: "LIGHT", value: listing.light || "—" },
     { label: "POT", value: mode === "rent" ? "Matte black urn" : '6" nursery pot' },
-    { label: "HANDOVER", value: mode === "rent" ? "Delivered by van" : "Collect or courier" },
+    { label: "HANDOVER", value: mode === "rent" ? "Delivered by van" : mode === "swap" ? "Meet up in person" : listing.delivery_method === "courier" ? "PlantLuva courier (+8%)" : "Collect or meet up" },
     { label: "LISTED", value: timeAgo(listing.created_at) },
   ];
 
@@ -611,7 +611,9 @@ export function ListingDetail({ id }: { id: string }) {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontWeight: 700, fontSize: 15, display: "flex", alignItems: "center", gap: 7 }}>
                   <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{seller.name}</span>
-                  <span style={{ background: "#B0C35C", color: "#3A2611", fontSize: 9.5, fontWeight: 700, padding: "3px 7px", borderRadius: 999, letterSpacing: ".08em", flexShrink: 0 }}>VERIFIED</span>
+                  <span style={{ background: seller.seller_type === "business" ? "#5C8AA6" : "#B0C35C", color: seller.seller_type === "business" ? "#FDF9EE" : "#3A2611", fontSize: 9.5, fontWeight: 700, padding: "3px 7px", borderRadius: 999, letterSpacing: ".08em", flexShrink: 0 }}>
+                    {seller.seller_type === "business" ? "PLANT SHOP" : "VERIFIED"}
+                  </span>
                 </div>
                 <div style={{ color: "#7A6A4E", fontSize: 12.5, marginTop: 3 }}>
                   ★ {seller.rating?.toFixed(1) ?? "5.0"} · {seller.region}
