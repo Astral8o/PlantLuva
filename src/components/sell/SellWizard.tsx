@@ -223,6 +223,32 @@ export function SellWizard() {
       <p style={{ color: "#7A6A4E", fontSize: 13.5, margin: "0 0 24px" }}>
         Selling as {profile?.name || "you"} · {profile?.seller_type === "business" ? "Plant shop" : "Individual seller"}
       </p>
+      {batch.length ? (
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", background: "#DCE3BC", borderRadius: 14, padding: "12px 16px", marginBottom: 24 }}>
+          <span style={{ fontWeight: 700, fontSize: 13.5, color: "#3A2611", flexShrink: 0 }}>
+            {batch.length} plant{batch.length === 1 ? "" : "s"} queued
+          </span>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", flex: 1 }}>
+            {batch.map((b, i) => (
+              <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#FDF9EE", borderRadius: 999, padding: "5px 6px 5px 12px", fontSize: 12.5, color: "#3A2611" }}>
+                {b.name}
+                <button
+                  onClick={() => setBatch((list) => list.filter((_, j) => j !== i))}
+                  title="Remove"
+                  style={{ border: 0, background: "none", color: "#7A6A4E", fontSize: 14, cursor: "pointer", padding: "2px 4px", lineHeight: 1 }}
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+          {step !== 3 ? (
+            <button onClick={() => setStep(3)} style={{ border: 0, background: "none", color: "#4F6E24", fontSize: 12.5, fontWeight: 700, cursor: "pointer", padding: 0, whiteSpace: "nowrap" }}>
+              Review &amp; submit all →
+            </button>
+          ) : null}
+        </div>
+      ) : null}
       <div style={{ display: "flex", gap: 6, marginBottom: 32 }}>
         {[
           [1, "DETAILS"],
@@ -420,13 +446,21 @@ export function SellWizard() {
               </div>
             ) : null}
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
             <button onClick={() => setStep(1)} style={{ border: "1px solid rgba(58,38,17,.2)", background: "none", padding: "15px 26px", borderRadius: 999, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
               ← Back
             </button>
-            <button onClick={() => setStep(3)} style={{ border: 0, background: "#6A9331", color: "#F5EEDC", padding: "15px 30px", borderRadius: 999, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
-              Next: review →
-            </button>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <button
+                onClick={addAnother}
+                style={{ border: "1.5px solid #6A9331", background: "none", color: "#3A2611", padding: "15px 24px", borderRadius: 999, fontSize: 14, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}
+              >
+                + Save &amp; add another plant
+              </button>
+              <button onClick={() => setStep(3)} style={{ border: 0, background: "#6A9331", color: "#F5EEDC", padding: "15px 30px", borderRadius: 999, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
+                Next: review →
+              </button>
+            </div>
           </div>
         </div>
       ) : null}
