@@ -187,7 +187,7 @@ export function Dashboard() {
             {profile?.region || "Trinidad & Tobago"} · ★ {(profile?.rating ?? 5).toFixed(1)}
           </div>
         </div>
-        <button onClick={() => router.push("/sell")} style={{ border: 0, background: "#6A9331", color: "#F5EEDC", padding: "14px 24px", borderRadius: 999, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
+        <button onClick={() => requireAuth("up", { seller: true, onSuccess: () => router.push("/sell") })} style={{ border: 0, background: "#6A9331", color: "#F5EEDC", padding: "14px 24px", borderRadius: 999, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
           Post a plant
         </button>
       </div>

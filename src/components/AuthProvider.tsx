@@ -32,6 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [sellerSetupOpen, setSellerSetupOpen] = useState(false);
   const [mode, setMode] = useState<"in" | "up">("in");
   const [forSeller, setForSeller] = useState(false);
   const [sellerType, setSellerType] = useState<"individual" | "business">("individual");
@@ -104,10 +105,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (el) setTimeout(() => el.focus(), 0);
   }
 
+  function closeSellerSetup() {
+    setSellerSetupOpen(false);
+    const el = lastFocus.current;
+    if (el) setTimeout(() => el.focus(), 0);
+  }
+
   const requireAuth: AuthContextValue["requireAuth"] = useCallback(
     (m, opts) => {
       lastFocus.current = document.activeElement as HTMLElement;
       if (user) {
+        if (opts?.seller && !profile?.seller_type) {
+          successRef.current = opts?.onSuccess;
+          setSellerType("individual");
+          setName(profile?.name || "");
+          setIsRegistered(false);
+          setSellerSetupOpen(true);
+          return;
+        }
         opts?.onSuccess?.();
         return;
       }
@@ -116,7 +131,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       successRef.current = opts?.onSuccess;
       setModalOpen(true);
     },
-    [user]
+    [user, profile]
   );
 
   async function submit() {
@@ -134,7 +149,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         avatar_url: null,
         rating: 5,
         is_grower: true,
-        seller_type: forSeller ? sellerType : "individual",
+        seller_type: forSeller ? sellerType : null,
         created_at: new Date().toISOString(),
       });
       setModalOpen(false);
@@ -158,6 +173,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     setModalOpen(false);
     setPassword("");
+    successRef.current?.();
+  }
+
+  async function completeSellerSetup() {
+    if (!name.trim()) return flash(sellerType === "business" ? "Give your shop a name first" : "Enter your name first");
+    if (DEMO_MODE) {
+      setProfile((p) => (p ? { ...p, name, first_name: sellerType === "business" ? name : name.split(" ")[0], seller_type: sellerType } : p));
+      setSellerSetupOpen(false);
+      flash("Seller profile set up");
+      successRef.current?.();
+      return;
+    }
+    if (user) {
+      const { error } = await supabase.from("profiles").update({ name }).eq("id", user.id);
+      if (error) return flash(error.message);
+      await loadProfile(user.id);
+    }
+    setSellerSetupOpen(false);
+    flash("Seller profile set up");
     successRef.current?.();
   }
 
@@ -425,6 +459,131 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 Swapping is always free. Selling, bidding and renting carry the standard 8% transaction fee. Deliver it yourself for no extra cost, or let PlantLuva courier handle it for another 8%.
               </p>
             </div>
+          </div>
+        </div>
+      ) : null}
+      {sellerSetupOpen ? (
+        <div
+          onClick={closeSellerSetup}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 70,
+            background: "rgba(58,38,17,.55)",
+            display: "grid",
+            placeItems: "center",
+            padding: 24,
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="seller-setup-title"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "100%",
+              maxWidth: 460,
+              maxHeight: "92vh",
+              overflowY: "auto",
+              background: "#FDF9EE",
+              borderRadius: 26,
+              padding: "34px 32px",
+              boxShadow: "0 28px 70px rgba(58,38,17,.35)",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+              <h2
+                id="seller-setup-title"
+                style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 23, letterSpacing: "-.02em", margin: 0, color: "#3A2611" }}
+              >
+                Set up your seller profile
+              </h2>
+              <button
+                onClick={closeSellerSetup}
+                aria-label="Close"
+                title="Close"
+                style={{ border: 0, background: "none", fontSize: 21, color: "#5A4B33", cursor: "pointer", lineHeight: 1, padding: "8px 12px", margin: "-8px -8px 0 0", minHeight: 40, minWidth: 40 }}
+              >
+                ×
+              </button>
+            </div>
+            <p style={{ color: "#63543A", fontSize: 14, lineHeight: 1.55, margin: "9px 0 18px" }}>
+              Your PlantLuva account is a buyer account so far. One more step before you can post a plant.
+            </p>
+            <div style={{ marginBottom: 20 }}>
+              <span style={{ display: "block", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em", color: "#7A6A4E", marginBottom: 8 }}>
+                HOW WILL YOU SELL?
+              </span>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                {(["individual", "business"] as const).map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setSellerType(t)}
+                    style={{
+                      border: "2px solid " + (sellerType === t ? "#6A9331" : "rgba(58,38,17,.14)"),
+                      background: sellerType === t ? "#F5EEDC" : "transparent",
+                      borderRadius: 12,
+                      padding: "12px 13px",
+                      textAlign: "left",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <div style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 14, color: "#3A2611" }}>
+                      {t === "individual" ? "Individual seller" : "Plant shop"}
+                    </div>
+                    <div style={{ color: "#7A6A4E", fontSize: 11.5, marginTop: 3, lineHeight: 1.35 }}>
+                      {t === "individual" ? "Selling from your own collection" : "A nursery or registered business"}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div style={{ display: "grid", gap: 13 }}>
+              <label style={{ display: "block" }}>
+                <span style={{ display: "block", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em", color: "#7A6A4E", marginBottom: 6 }}>
+                  {sellerType === "business" ? "SHOP / BUSINESS NAME" : "NAME"}
+                </span>
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder={sellerType === "business" ? "Dexter's Backyard Nursery" : "Kavita Ramdeen"}
+                  style={inputStyle}
+                />
+              </label>
+              {sellerType === "business" ? (
+                <label style={{ display: "flex", alignItems: "center", gap: 9, cursor: "pointer" }}>
+                  <input
+                    type="checkbox"
+                    checked={isRegistered}
+                    onChange={(e) => setIsRegistered(e.target.checked)}
+                    style={{ width: 18, height: 18, accentColor: "#6A9331", cursor: "pointer" }}
+                  />
+                  <span style={{ fontSize: 13.5, color: "#3A2611" }}>This is a registered business</span>
+                </label>
+              ) : null}
+            </div>
+            <button
+              onClick={completeSellerSetup}
+              style={{
+                width: "100%",
+                marginTop: 20,
+                border: 0,
+                background: "#6A9331",
+                color: "#F5EEDC",
+                padding: 16,
+                borderRadius: 14,
+                fontFamily: "var(--font-gluten)",
+                fontWeight: 700,
+                fontSize: 15.5,
+                cursor: "pointer",
+              }}
+            >
+              Continue
+            </button>
+            <p style={{ color: "#6F6249", fontSize: 12, lineHeight: 1.5, margin: "16px 0 0" }}>
+              Your buyer account stays exactly as it is — this just adds selling on top of it.
+            </p>
           </div>
         </div>
       ) : null}

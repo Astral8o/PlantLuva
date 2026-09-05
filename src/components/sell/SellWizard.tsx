@@ -166,6 +166,18 @@ export function SellWizard() {
     );
   }
 
+  if (!profile?.seller_type) {
+    return (
+      <main data-r="pad" style={{ maxWidth: 900, margin: "0 auto", padding: "36px 32px 96px", textAlign: "center" }}>
+        <h1 style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 29, letterSpacing: "-.03em" }}>Post a plant</h1>
+        <p style={{ color: "#63543A", margin: "14px 0 24px" }}>Your account is set up for buying so far. Set up a seller profile to list here, as an individual seller or a plant shop.</p>
+        <button onClick={() => requireAuth("up", { seller: true })} style={{ border: 0, background: "#6A9331", color: "#F5EEDC", padding: "15px 28px", borderRadius: 999, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
+          Set up seller profile
+        </button>
+      </main>
+    );
+  }
+
   if (published) {
     const totalCount = batch.length + 1;
     return (
