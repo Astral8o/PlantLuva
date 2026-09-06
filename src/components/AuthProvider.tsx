@@ -259,7 +259,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           >
             <div
               className="pl-auth-art"
-              style={{ position: "relative", alignSelf: "start", height: 450, background: "#EBE2CE" }}
+              style={{ position: "relative", minHeight: 450, background: "#EBE2CE" }}
             >
               <img
                 src="/img/potting-shop.jpg"
