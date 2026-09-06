@@ -334,9 +334,9 @@ export function SellWizard() {
 
       {step === 1 ? (
         <div className="pl-rise" style={{ display: "grid", gap: 20 }}>
-          <div>
+          <div style={{ minWidth: 0 }}>
             <div style={labelStyle}>PHOTOS · UP TO 5</div>
-            <div style={{ overflowX: "auto", paddingBottom: 2 }}>
+            <div style={{ overflowX: "auto", paddingBottom: 2, minWidth: 0 }}>
               <div data-r="photog" style={{ display: "grid", gridTemplateColumns: `repeat(${MAX_PHOTOS},72px)`, gridAutoRows: 72, gap: 10, width: "max-content" }}>
                 {Array.from({ length: MAX_PHOTOS }).map((_, i) =>
                   draft.photos[i] ? (
