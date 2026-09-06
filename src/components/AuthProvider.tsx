@@ -295,7 +295,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 </p>
               </div>
             </div>
-            <div style={{ padding: "34px 32px" }}>
+            <div style={{ padding: "26px 32px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
                 <h2
                   id="auth-title"
@@ -323,13 +323,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                   ×
                 </button>
               </div>
-              <p style={{ color: "#63543A", fontSize: 14, lineHeight: 1.55, margin: "9px 0 18px" }}>
+              <p style={{ color: "#63543A", fontSize: 13.5, lineHeight: 1.45, margin: "8px 0 14px" }}>
                 {forSeller
-                  ? "Sign in to post a plant. We review every listing before it reaches the shelf, so buyers know what they are getting is safe and trusted."
+                  ? "We review every listing before it reaches the shelf, so buyers know what they are getting is safe and trusted."
                   : "Four ways to take a plant home off somebody else's shelf."}
               </p>
               {forSeller && mode === "up" ? (
-                <div style={{ marginBottom: 20 }}>
+                <div style={{ marginBottom: 14 }}>
                   <span style={{ display: "block", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em", color: "#7A6A4E", marginBottom: 8 }}>
                     HOW WILL YOU SELL?
                   </span>
@@ -343,7 +343,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                           border: "2px solid " + (sellerType === t ? "#6A9331" : "rgba(58,38,17,.14)"),
                           background: sellerType === t ? "#F5EEDC" : "transparent",
                           borderRadius: 12,
-                          padding: "12px 13px",
+                          padding: "10px 13px",
                           textAlign: "left",
                           cursor: "pointer",
                         }}
@@ -351,7 +351,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                         <div style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 14, color: "#3A2611" }}>
                           {t === "individual" ? "Individual seller" : "Plant shop"}
                         </div>
-                        <div style={{ color: "#7A6A4E", fontSize: 11.5, marginTop: 3, lineHeight: 1.35 }}>
+                        <div style={{ color: "#7A6A4E", fontSize: 11.5, marginTop: 2, lineHeight: 1.3 }}>
                           {t === "individual" ? "Selling from your own collection" : "A nursery or registered business"}
                         </div>
                       </button>
@@ -400,20 +400,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                   ))}
                 </div>
               ) : null}
-              <div style={{ display: "grid", gap: 13 }}>
+              <div style={{ display: "grid", gap: 12 }}>
                 {mode === "up" ? (
+                  <div data-r="g2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                    <label style={{ display: "block" }}>
+                      <span style={{ display: "block", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em", color: "#7A6A4E", marginBottom: 6 }}>
+                        {forSeller && sellerType === "business" ? "SHOP / BUSINESS NAME" : "NAME"}
+                      </span>
+                      <input
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder={forSeller && sellerType === "business" ? "Dexter's Backyard Nursery" : "Kavita Ramdeen"}
+                        style={inputStyle}
+                      />
+                    </label>
+                    <label style={{ display: "block" }}>
+                      <span style={{ display: "block", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em", color: "#7A6A4E", marginBottom: 6 }}>
+                        EMAIL
+                      </span>
+                      <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" style={inputStyle} />
+                    </label>
+                  </div>
+                ) : (
                   <label style={{ display: "block" }}>
                     <span style={{ display: "block", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em", color: "#7A6A4E", marginBottom: 6 }}>
-                      {forSeller && sellerType === "business" ? "SHOP / BUSINESS NAME" : "NAME"}
+                      EMAIL
                     </span>
-                    <input
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder={forSeller && sellerType === "business" ? "Dexter's Backyard Nursery" : "Kavita Ramdeen"}
-                      style={inputStyle}
-                    />
+                    <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" style={inputStyle} />
                   </label>
-                ) : null}
+                )}
                 {mode === "up" && forSeller && sellerType === "business" ? (
                   <label style={{ display: "flex", alignItems: "center", gap: 9, cursor: "pointer" }}>
                     <input
@@ -425,12 +440,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     <span style={{ fontSize: 13.5, color: "#3A2611" }}>This is a registered business</span>
                   </label>
                 ) : null}
-                <label style={{ display: "block" }}>
-                  <span style={{ display: "block", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em", color: "#7A6A4E", marginBottom: 6 }}>
-                    EMAIL
-                  </span>
-                  <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" style={inputStyle} />
-                </label>
                 <label style={{ display: "block" }}>
                   <span style={{ display: "block", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em", color: "#7A6A4E", marginBottom: 6 }}>
                     PASSWORD
@@ -448,11 +457,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 onClick={submit}
                 style={{
                   width: "100%",
-                  marginTop: 20,
+                  marginTop: 14,
                   border: 0,
                   background: "#6A9331",
                   color: "#F5EEDC",
-                  padding: 16,
+                  padding: 14,
                   borderRadius: 14,
                   fontFamily: "var(--font-gluten)",
                   fontWeight: 700,
@@ -462,7 +471,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               >
                 {mode === "up" ? "Create account" : "Sign in"}
               </button>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 18, fontSize: 13.5, color: "#7A6A4E" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12, fontSize: 13.5, color: "#7A6A4E" }}>
                 <span>{mode === "up" ? "Already have an account?" : "New here?"}</span>
                 <button
                   onClick={() => setMode(mode === "up" ? "in" : "up")}
@@ -471,7 +480,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                   {mode === "up" ? "Sign in" : "Create one"}
                 </button>
               </div>
-              <p style={{ color: "#6F6249", fontSize: 12, lineHeight: 1.5, margin: "16px 0 0" }}>
+              <p style={{ color: "#6F6249", fontSize: 11.5, lineHeight: 1.4, margin: "12px 0 0" }}>
                 Swapping is always free. Selling, bidding and renting carry the standard 8% transaction fee. Deliver it yourself for no extra cost, or let PlantLuva courier handle it for another 8%.
               </p>
             </div>
