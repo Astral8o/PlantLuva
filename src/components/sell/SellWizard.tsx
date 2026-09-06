@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { useToast } from "@/components/ToastProvider";
 import { MODES, REGIONS, SIZES, CARE_LEVELS, type Mode } from "@/lib/constants";
 import { DEMO_MODE } from "@/lib/demoMode";
+
+const MAX_PHOTOS = 5;
 
 interface Draft {
   name: string;
@@ -22,6 +24,7 @@ interface Draft {
   auctionDays: string; // bid: 1 | 3 | 7
   deposit: string; // rent
   delivery: "self" | "courier";
+  photos: string[]; // object URLs of user-picked images, up to MAX_PHOTOS
 }
 
 const EMPTY_DRAFT = (region: string): Draft => ({
@@ -38,6 +41,7 @@ const EMPTY_DRAFT = (region: string): Draft => ({
   auctionDays: "3",
   deposit: "500",
   delivery: "self",
+  photos: [],
 });
 
 const FIELD_LABELS: Record<Mode, { title: string; priceLabel: string; pricePh: string }> = {
@@ -69,9 +73,28 @@ export function SellWizard() {
   const [batch, setBatch] = useState<Draft[]>([]);
   const [draft, setDraft] = useState<Draft>(EMPTY_DRAFT("Port of Spain"));
   const [submitting, setSubmitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   function set<K extends keyof Draft>(key: K, value: Draft[K]) {
     setDraft((d) => ({ ...d, [key]: value }));
+  }
+
+  function handlePhotoFiles(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files || []);
+    e.target.value = "";
+    if (!files.length) return;
+    setDraft((d) => {
+      const room = MAX_PHOTOS - d.photos.length;
+      const urls = files.slice(0, room).map((f) => URL.createObjectURL(f));
+      if (files.length > room) flash("Only " + MAX_PHOTOS + " photos per plant — the rest weren't added");
+      return { ...d, photos: [...d.photos, ...urls] };
+    });
+  }
+
+  function removePhoto(i: number) {
+    // Not revoking the object URL here — "Duplicate" can leave two drafts
+    // sharing the same blob URL, and revoking would break the other one too.
+    setDraft((d) => ({ ...d, photos: d.photos.filter((_, j) => j !== i) }));
   }
 
   function toRow(d: Draft, uid: string) {
@@ -112,7 +135,7 @@ export function SellWizard() {
       start_bid: startBid,
       ends_at: endsAt,
       wants,
-      images: ["/img/pink-princess.jpg"],
+      images: d.photos.length ? d.photos : ["/img/pink-princess.jpg"],
       status: "pending",
     };
   }
@@ -313,17 +336,38 @@ export function SellWizard() {
         <div className="pl-rise" style={{ display: "grid", gap: 20 }}>
           <div>
             <div style={labelStyle}>PHOTOS · UP TO 5</div>
-            <div data-r="photog" style={{ display: "grid", gridTemplateColumns: "repeat(5,minmax(0,1fr))", gap: 12, maxWidth: 420 }}>
-              <div style={{ aspectRatio: "1", borderRadius: 14, overflow: "hidden" }}>
-                <img src="/img/pink-princess.jpg" alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <div style={{ overflowX: "auto", paddingBottom: 2 }}>
+              <div data-r="photog" style={{ display: "grid", gridTemplateColumns: `repeat(${MAX_PHOTOS},72px)`, gridAutoRows: 72, gap: 10, width: "max-content" }}>
+                {Array.from({ length: MAX_PHOTOS }).map((_, i) =>
+                  draft.photos[i] ? (
+                    <div key={i} style={{ position: "relative", width: 72, height: 72, borderRadius: 14, overflow: "hidden" }}>
+                      <img src={draft.photos[i]} alt={"Photo " + (i + 1)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      <button
+                        type="button"
+                        onClick={() => removePhoto(i)}
+                        aria-label="Remove photo"
+                        style={{ position: "absolute", top: 4, right: 4, width: 20, height: 20, borderRadius: "50%", border: 0, background: "rgba(58,38,17,.75)", color: "#FDF9EE", fontSize: 12, lineHeight: 1, cursor: "pointer", display: "grid", placeItems: "center", padding: 0 }}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      style={{ width: 72, height: 72, border: "1.5px dashed rgba(58,38,17,.3)", borderRadius: 14, display: "grid", placeItems: "center", color: "#A79B7E", fontSize: 22, background: "none", cursor: "pointer", padding: 0 }}
+                    >
+                      +
+                    </button>
+                  )
+                )}
               </div>
-              {[1, 2, 3, 4].map((n) => (
-                <div key={n} style={{ aspectRatio: "1", border: "1.5px dashed rgba(58,38,17,.3)", borderRadius: 14, display: "grid", placeItems: "center", color: "#A79B7E", fontSize: 22 }}>
-                  +
-                </div>
-              ))}
             </div>
-            <p style={{ color: "#7A6A4E", fontSize: 12.5, margin: "9px 0 0" }}>Photo upload coming soon — for now every listing ships with its cover photo.</p>
+            <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handlePhotoFiles} style={{ display: "none" }} />
+            <p style={{ color: "#7A6A4E", fontSize: 12.5, margin: "9px 0 0" }}>
+              {draft.photos.length ? "Tap the × to remove a photo. First photo is the cover." : "Tap a square to add photos from your device. First photo becomes the cover."}
+            </p>
           </div>
           <div data-r="g2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
@@ -522,7 +566,7 @@ export function SellWizard() {
         <div className="pl-rise" style={{ display: "grid", gap: 20 }}>
           <div data-r="split" style={{ display: "grid", gridTemplateColumns: "210px 1fr", gap: 24, border: "1px solid rgba(58,38,17,.14)", borderRadius: 20, padding: 22 }}>
             <div style={{ aspectRatio: "4/5", borderRadius: 14, overflow: "hidden", background: "#EBE2CE" }}>
-              <img src="/img/pink-princess.jpg" alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src={draft.photos[0] || "/img/pink-princess.jpg"} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
             <div>
               <span style={{ display: "inline-block", background: MODES[draft.mode].bg, color: MODES[draft.mode].fg, padding: "5px 12px", borderRadius: 999, fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em" }}>

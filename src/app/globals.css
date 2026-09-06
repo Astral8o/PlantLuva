@@ -247,10 +247,6 @@ textarea:focus-visible,
     flex: 1 0 100%;
     margin-top: 4px;
   }
-  [data-r~="photog"] {
-    max-width: 260px !important;
-    gap: 8px !important;
-  }
 }
 
 .pl-skip-link {
