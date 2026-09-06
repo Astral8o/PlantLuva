@@ -398,12 +398,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     />
                   </label>
                 ) : null}
-                {mode === "up" && forSeller && sellerType === "business" ? (
-                  <label style={{ display: "flex", alignItems: "center", gap: 9, cursor: "pointer" }}>
+                {mode === "up" && forSeller ? (
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 9,
+                      cursor: "pointer",
+                      visibility: sellerType === "business" ? "visible" : "hidden",
+                    }}
+                  >
                     <input
                       type="checkbox"
                       checked={isRegistered}
                       onChange={(e) => setIsRegistered(e.target.checked)}
+                      tabIndex={sellerType === "business" ? 0 : -1}
                       style={{ width: 18, height: 18, accentColor: "#6A9331", cursor: "pointer" }}
                     />
                     <span style={{ fontSize: 13.5, color: "#3A2611" }}>This is a registered business</span>
