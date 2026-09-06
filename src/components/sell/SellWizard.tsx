@@ -336,11 +336,11 @@ export function SellWizard() {
         <div className="pl-rise" style={{ display: "grid", gap: 20 }}>
           <div style={{ minWidth: 0 }}>
             <div style={labelStyle}>PHOTOS · UP TO 5</div>
-            <div style={{ overflowX: "auto", paddingBottom: 2, minWidth: 0 }}>
-              <div data-r="photog" style={{ display: "grid", gridTemplateColumns: `repeat(${MAX_PHOTOS},72px)`, gridAutoRows: 72, gap: 10, width: "max-content" }}>
+            <div style={{ minWidth: 0 }}>
+              <div data-r="photog" style={{ display: "grid", gridTemplateColumns: `repeat(${MAX_PHOTOS},minmax(0,1fr))`, gap: 10, maxWidth: 400 }}>
                 {Array.from({ length: MAX_PHOTOS }).map((_, i) =>
                   draft.photos[i] ? (
-                    <div key={i} style={{ position: "relative", width: 72, height: 72, borderRadius: 14, overflow: "hidden" }}>
+                    <div key={i} style={{ position: "relative", aspectRatio: "1", borderRadius: 14, overflow: "hidden" }}>
                       <img src={draft.photos[i]} alt={"Photo " + (i + 1)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                       <button
                         type="button"
@@ -356,7 +356,7 @@ export function SellWizard() {
                       key={i}
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      style={{ width: 72, height: 72, border: "1.5px dashed rgba(58,38,17,.3)", borderRadius: 14, display: "grid", placeItems: "center", color: "#A79B7E", fontSize: 22, background: "none", cursor: "pointer", padding: 0 }}
+                      style={{ aspectRatio: "1", width: "100%", border: "1.5px dashed rgba(58,38,17,.3)", borderRadius: 14, display: "grid", placeItems: "center", color: "#A79B7E", fontSize: 22, background: "none", cursor: "pointer", padding: 0 }}
                     >
                       +
                     </button>
