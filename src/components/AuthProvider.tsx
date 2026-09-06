@@ -43,6 +43,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const successRef = useRef<(() => void) | undefined>(undefined);
   const lastFocus = useRef<HTMLElement | null>(null);
   const dialogRef = useRef<HTMLDivElement | null>(null);
+  const [dialogHasMore, setDialogHasMore] = useState(false);
+
+  useEffect(() => {
+    const el = dialogRef.current;
+    if (!el || !modalOpen) return;
+    const check = () => setDialogHasMore(el.scrollHeight - el.scrollTop - el.clientHeight > 4);
+    check();
+    el.addEventListener("scroll", check);
+    window.addEventListener("resize", check);
+    const id = window.setTimeout(check, 50); // after fonts/layout settle
+    return () => {
+      el.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+      window.clearTimeout(id);
+    };
+  }, [modalOpen, mode, forSeller, sellerType]);
 
   const loadProfile = useCallback(
     async (uid: string) => {
@@ -243,7 +259,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           >
             <div
               className="pl-auth-art"
-              style={{ position: "relative", minHeight: 450, background: "#EBE2CE" }}
+              style={{ position: "relative", alignSelf: "start", height: 450, background: "#EBE2CE" }}
             >
               <img
                 src="/img/potting-shop.jpg"
@@ -398,21 +414,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     />
                   </label>
                 ) : null}
-                {mode === "up" && forSeller ? (
-                  <label
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 9,
-                      cursor: "pointer",
-                      visibility: sellerType === "business" ? "visible" : "hidden",
-                    }}
-                  >
+                {mode === "up" && forSeller && sellerType === "business" ? (
+                  <label style={{ display: "flex", alignItems: "center", gap: 9, cursor: "pointer" }}>
                     <input
                       type="checkbox"
                       checked={isRegistered}
                       onChange={(e) => setIsRegistered(e.target.checked)}
-                      tabIndex={sellerType === "business" ? 0 : -1}
                       style={{ width: 18, height: 18, accentColor: "#6A9331", cursor: "pointer" }}
                     />
                     <span style={{ fontSize: 13.5, color: "#3A2611" }}>This is a registered business</span>
@@ -468,6 +475,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 Swapping is always free. Selling, bidding and renting carry the standard 8% transaction fee. Deliver it yourself for no extra cost, or let PlantLuva courier handle it for another 8%.
               </p>
             </div>
+            {dialogHasMore ? (
+              <div
+                aria-hidden="true"
+                style={{
+                  gridColumn: "1 / -1",
+                  position: "sticky",
+                  bottom: 0,
+                  height: 34,
+                  marginTop: -34,
+                  pointerEvents: "none",
+                  background: "linear-gradient(to bottom, rgba(253,249,238,0), rgba(253,249,238,.95))",
+                  display: "flex",
+                  alignItems: "flex-end",
+                  justifyContent: "center",
+                  paddingBottom: 4,
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: ".08em",
+                  color: "#7A6A4E",
+                }}
+              >
+                ↓ SCROLL FOR MORE
+              </div>
+            ) : null}
           </div>
         </div>
       ) : null}
