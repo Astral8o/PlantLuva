@@ -361,10 +361,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                           cursor: "pointer",
                         }}
                       >
-                        <div style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 14, color: "#3A2611" }}>
-                          {t === "individual" ? "Individual seller" : "Plant shop"}
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <span
+                            style={{
+                              width: 22,
+                              height: 22,
+                              borderRadius: "50%",
+                              background: t === "individual" ? "#B0C35C" : "#5C8AA6",
+                              color: t === "individual" ? "#3A2611" : "#FDF9EE",
+                              display: "grid",
+                              placeItems: "center",
+                              fontSize: 11,
+                              fontWeight: 700,
+                              flexShrink: 0,
+                            }}
+                          >
+                            {t === "individual" ? "I" : "B"}
+                          </span>
+                          <div style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 14, color: "#3A2611" }}>
+                            {t === "individual" ? "Individual seller" : "Plant shop"}
+                          </div>
                         </div>
-                        <div style={{ color: "#7A6A4E", fontSize: 11.5, marginTop: 2, lineHeight: 1.3 }}>
+                        <div style={{ color: "#7A6A4E", fontSize: 11.5, marginTop: 4, lineHeight: 1.3, marginLeft: 30 }}>
                           {t === "individual" ? "Selling from your own collection" : "A nursery or registered business"}
                         </div>
                       </button>
@@ -668,10 +686,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                       cursor: "pointer",
                     }}
                   >
-                    <div style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 14, color: "#3A2611" }}>
-                      {t === "individual" ? "Individual seller" : "Plant shop"}
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span
+                        style={{
+                          width: 22,
+                          height: 22,
+                          borderRadius: "50%",
+                          background: t === "individual" ? "#B0C35C" : "#5C8AA6",
+                          color: t === "individual" ? "#3A2611" : "#FDF9EE",
+                          display: "grid",
+                          placeItems: "center",
+                          fontSize: 11,
+                          fontWeight: 700,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {t === "individual" ? "I" : "B"}
+                      </span>
+                      <div style={{ fontFamily: "var(--font-gluten)", fontWeight: 800, fontSize: 14, color: "#3A2611" }}>
+                        {t === "individual" ? "Individual seller" : "Plant shop"}
+                      </div>
                     </div>
-                    <div style={{ color: "#7A6A4E", fontSize: 11.5, marginTop: 3, lineHeight: 1.35 }}>
+                    <div style={{ color: "#7A6A4E", fontSize: 11.5, marginTop: 4, lineHeight: 1.35, marginLeft: 30 }}>
                       {t === "individual" ? "Selling from your own collection" : "A nursery or registered business"}
                     </div>
                   </button>
