@@ -86,13 +86,13 @@ export function SellWizard() {
     setDraft((d) => {
       const room = MAX_PHOTOS - d.photos.length;
       const urls = files.slice(0, room).map((f) => URL.createObjectURL(f));
-      if (files.length > room) flash("Only " + MAX_PHOTOS + " photos per plant — the rest weren't added");
+      if (files.length > room) flash("Only " + MAX_PHOTOS + " photos per plant. The rest weren't added");
       return { ...d, photos: [...d.photos, ...urls] };
     });
   }
 
   function removePhoto(i: number) {
-    // Not revoking the object URL here — "Duplicate" can leave two drafts
+    // Not revoking the object URL here: "Duplicate" can leave two drafts
     // sharing the same blob URL, and revoking would break the other one too.
     setDraft((d) => ({ ...d, photos: d.photos.filter((_, j) => j !== i) }));
   }
@@ -160,7 +160,7 @@ export function SellWizard() {
     );
     setStep(1);
     window.scrollTo({ top: 0, behavior: "smooth" });
-    flash(kind === "duplicate" ? "Duplicated " + saved.name + " — tweak what's different" : saved.name + " saved. Region, size, care and light carried over for the next one.");
+    flash(kind === "duplicate" ? "Duplicated " + saved.name + ". Tweak what's different" : saved.name + " saved. Region, size, care and light carried over for the next one.");
   }
 
   function editQueued(i: number) {
@@ -285,7 +285,7 @@ export function SellWizard() {
       </p>
       {!batch.length ? (
         <p style={{ color: "#7A6A4E", fontSize: 13, margin: "0 0 24px" }}>
-          Got more than one to list? Save each plant and keep going — you&apos;ll review and submit the whole shelf together at the end.
+          Got more than one to list? Save each plant and keep going. You&apos;ll review and submit the whole shelf together at the end.
         </p>
       ) : (
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", background: "#DCE3BC", borderRadius: 14, padding: "12px 16px", marginBottom: 24 }}>
@@ -622,7 +622,7 @@ export function SellWizard() {
             {draft.mode === "swap"
               ? "Label it with the species and how you grow it, check it over for pests, and be willing to part with it. Trades are between the two of you; we just hold the chat and the handover record."
               : draft.delivery === "courier"
-              ? "PlantLuva takes 8% when the plant sells or the rental completes, plus 8% for courier delivery — 16% total. Payouts reach your bank two working days after handover, or your WiPay wallet the same evening."
+              ? "PlantLuva takes 8% when the plant sells or the rental completes, plus 8% for courier delivery (16% total). Payouts reach your bank two working days after handover, or your WiPay wallet the same evening."
               : "PlantLuva takes 8% when the plant sells or the rental completes. You're handling delivery yourself, so no extra delivery fee applies. Payouts reach your bank two working days after handover, or your WiPay wallet the same evening."}
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>

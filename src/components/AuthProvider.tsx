@@ -526,7 +526,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     </div>
                     <input ref={idFileInputRef} type="file" accept="image/*" onChange={handleIdPhotoFile} style={{ display: "none" }} />
                     <p style={{ color: "#7A6A4E", fontSize: 11, lineHeight: 1.4, margin: "6px 0 0" }}>
-                      For trust &amp; safety only — confirms you&apos;re a real seller. Never shared with buyers or other sellers, and not used for anything else.
+                      For trust &amp; safety only. Confirms you&apos;re a real seller. Never shared with buyers or other sellers, and not used for anything else.
                     </p>
                   </div>
                 ) : null}
@@ -773,7 +773,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 </div>
                 <input ref={idFileInputRef} type="file" accept="image/*" onChange={handleIdPhotoFile} style={{ display: "none" }} />
                 <p style={{ color: "#7A6A4E", fontSize: 11, lineHeight: 1.4, margin: "6px 0 0" }}>
-                  For trust &amp; safety only — confirms you&apos;re a real seller. Never shared with buyers or other sellers, and not used for anything else.
+                  For trust &amp; safety only. Confirms you&apos;re a real seller. Never shared with buyers or other sellers, and not used for anything else.
                 </p>
               </div>
             </div>
@@ -796,7 +796,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               Continue
             </button>
             <p style={{ color: "#6F6249", fontSize: 12, lineHeight: 1.5, margin: "16px 0 0" }}>
-              Your buyer account stays exactly as it is — this just adds selling on top of it.
+              Your buyer account stays exactly as it is. This just adds selling on top of it.
             </p>
           </div>
         </div>

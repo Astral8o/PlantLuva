@@ -262,15 +262,15 @@ export function ListingDetail({ id }: { id: string }) {
 
   const specs = isMerch
     ? [
-        { label: "MATERIAL", value: listing.care || "—" },
-        { label: "SIZE", value: listing.size || "—" },
+        { label: "MATERIAL", value: listing.care || "N/A" },
+        { label: "SIZE", value: listing.size || "N/A" },
         { label: "HANDOVER", value: "Collect or courier" },
         { label: "LISTED", value: timeAgo(listing.created_at) },
       ]
     : [
-    { label: "SIZE", value: listing.size || "—" },
-    { label: "CARE", value: listing.care || "—" },
-    { label: "LIGHT", value: listing.light || "—" },
+    { label: "SIZE", value: listing.size || "N/A" },
+    { label: "CARE", value: listing.care || "N/A" },
+    { label: "LIGHT", value: listing.light || "N/A" },
     { label: "POT", value: mode === "rent" ? "Matte black urn" : '6" nursery pot' },
     { label: "HANDOVER", value: mode === "rent" ? "Delivered by van" : mode === "swap" ? "Meet up in person" : listing.delivery_method === "courier" ? "PlantLuva courier (+8%)" : "Collect or meet up" },
     { label: "LISTED", value: timeAgo(listing.created_at) },
