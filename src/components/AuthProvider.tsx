@@ -40,10 +40,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [isRegistered, setIsRegistered] = useState(false);
+  const [idNumber, setIdNumber] = useState("");
+  const [idPhoto, setIdPhoto] = useState<string | null>(null);
+  const idFileInputRef = useRef<HTMLInputElement>(null);
   const successRef = useRef<(() => void) | undefined>(undefined);
   const lastFocus = useRef<HTMLElement | null>(null);
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const [dialogHasMore, setDialogHasMore] = useState(false);
+
+  function handleIdPhotoFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (file) setIdPhoto(URL.createObjectURL(file));
+  }
 
   useEffect(() => {
     const el = dialogRef.current;
@@ -117,6 +126,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   function close() {
     setModalOpen(false);
     setPassword("");
+    setIdNumber("");
+    setIdPhoto(null);
     const el = lastFocus.current;
     if (el) setTimeout(() => el.focus(), 0);
   }
@@ -136,6 +147,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setSellerType("individual");
           setName(profile?.name || "");
           setIsRegistered(false);
+          setIdNumber("");
+          setIdPhoto(null);
           setSellerSetupOpen(true);
           return;
         }
@@ -440,6 +453,83 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     <span style={{ fontSize: 13.5, color: "#3A2611" }}>This is a registered business</span>
                   </label>
                 ) : null}
+                {mode === "up" && forSeller ? (
+                  <div>
+                    <div data-r="g2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                      <label style={{ display: "block" }}>
+                        <span style={{ display: "block", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em", color: "#7A6A4E", marginBottom: 6 }}>
+                          ID NUMBER
+                        </span>
+                        <input
+                          value={idNumber}
+                          onChange={(e) => setIdNumber(e.target.value)}
+                          placeholder="National ID or passport no."
+                          style={inputStyle}
+                        />
+                      </label>
+                      <div>
+                        <span style={{ display: "block", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em", color: "#7A6A4E", marginBottom: 6 }}>
+                          ID PHOTO
+                        </span>
+                        {idPhoto ? (
+                          <div style={{ position: "relative", height: 46, borderRadius: 12, overflow: "hidden" }}>
+                            <img src={idPhoto} alt="ID preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                            <button
+                              type="button"
+                              onClick={() => setIdPhoto(null)}
+                              aria-label="Remove ID photo"
+                              style={{
+                                position: "absolute",
+                                top: 4,
+                                right: 4,
+                                width: 18,
+                                height: 18,
+                                borderRadius: "50%",
+                                border: 0,
+                                background: "rgba(58,38,17,.75)",
+                                color: "#FDF9EE",
+                                fontSize: 11,
+                                lineHeight: 1,
+                                cursor: "pointer",
+                                display: "grid",
+                                placeItems: "center",
+                                padding: 0,
+                              }}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => idFileInputRef.current?.click()}
+                            style={{
+                              width: "100%",
+                              height: 46,
+                              border: "1.5px dashed rgba(58,38,17,.3)",
+                              borderRadius: 12,
+                              background: "none",
+                              color: "#7A6A4E",
+                              fontSize: 12.5,
+                              fontWeight: 600,
+                              cursor: "pointer",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              gap: 5,
+                            }}
+                          >
+                            + Upload photo
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    <input ref={idFileInputRef} type="file" accept="image/*" onChange={handleIdPhotoFile} style={{ display: "none" }} />
+                    <p style={{ color: "#7A6A4E", fontSize: 11, lineHeight: 1.4, margin: "6px 0 0" }}>
+                      For trust &amp; safety only — confirms you&apos;re a real seller. Never shared with buyers or other sellers, and not used for anything else.
+                    </p>
+                  </div>
+                ) : null}
                 <label style={{ display: "block" }}>
                   <span style={{ display: "block", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em", color: "#7A6A4E", marginBottom: 6 }}>
                     PASSWORD
@@ -611,6 +701,81 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                   <span style={{ fontSize: 13.5, color: "#3A2611" }}>This is a registered business</span>
                 </label>
               ) : null}
+              <div>
+                <div data-r="g2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <label style={{ display: "block" }}>
+                    <span style={{ display: "block", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em", color: "#7A6A4E", marginBottom: 6 }}>
+                      ID NUMBER
+                    </span>
+                    <input
+                      value={idNumber}
+                      onChange={(e) => setIdNumber(e.target.value)}
+                      placeholder="National ID or passport no."
+                      style={inputStyle}
+                    />
+                  </label>
+                  <div>
+                    <span style={{ display: "block", fontSize: 10.5, fontWeight: 700, letterSpacing: ".11em", color: "#7A6A4E", marginBottom: 6 }}>
+                      ID PHOTO
+                    </span>
+                    {idPhoto ? (
+                      <div style={{ position: "relative", height: 46, borderRadius: 12, overflow: "hidden" }}>
+                        <img src={idPhoto} alt="ID preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        <button
+                          type="button"
+                          onClick={() => setIdPhoto(null)}
+                          aria-label="Remove ID photo"
+                          style={{
+                            position: "absolute",
+                            top: 4,
+                            right: 4,
+                            width: 18,
+                            height: 18,
+                            borderRadius: "50%",
+                            border: 0,
+                            background: "rgba(58,38,17,.75)",
+                            color: "#FDF9EE",
+                            fontSize: 11,
+                            lineHeight: 1,
+                            cursor: "pointer",
+                            display: "grid",
+                            placeItems: "center",
+                            padding: 0,
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => idFileInputRef.current?.click()}
+                        style={{
+                          width: "100%",
+                          height: 46,
+                          border: "1.5px dashed rgba(58,38,17,.3)",
+                          borderRadius: 12,
+                          background: "none",
+                          color: "#7A6A4E",
+                          fontSize: 12.5,
+                          fontWeight: 600,
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 5,
+                        }}
+                      >
+                        + Upload photo
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <input ref={idFileInputRef} type="file" accept="image/*" onChange={handleIdPhotoFile} style={{ display: "none" }} />
+                <p style={{ color: "#7A6A4E", fontSize: 11, lineHeight: 1.4, margin: "6px 0 0" }}>
+                  For trust &amp; safety only — confirms you&apos;re a real seller. Never shared with buyers or other sellers, and not used for anything else.
+                </p>
+              </div>
             </div>
             <button
               onClick={completeSellerSetup}
